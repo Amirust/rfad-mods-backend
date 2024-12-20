@@ -4,11 +4,10 @@ module.exports = {
     project: 'tsconfig.json',
     tsconfigRootDir: __dirname,
     sourceType: 'module',
-  }, 
+  },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
   ],
   root: true,
   env: {
@@ -23,5 +22,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'array-bracket-spacing':  ["error", "always", { "objectsInArrays": false }],
     'quotes': ["error", "single"],
+    'no-trailing-spaces': "error"
   },
 };
