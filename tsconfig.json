@@ -16,6 +16,26 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@app/response": [
+        "libs/response/src"
+      ],
+      "@app/response/*": [
+        "libs/response/src/*"
+      ],
+      "@app/snowflake": [
+        "libs/snowflake/src"
+      ],
+      "@app/snowflake/*": [
+        "libs/snowflake/src/*"
+      ],
+      "@app/types": [
+        "libs/types/src"
+      ],
+      "@app/types/*": [
+        "libs/types/src/*"
+      ]
+    }
   }
 }

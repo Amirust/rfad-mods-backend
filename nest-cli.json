@@ -3,6 +3,36 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true
+  },
+  "projects": {
+    "response": {
+      "type": "library",
+      "root": "libs/response",
+      "entryFile": "index",
+      "sourceRoot": "libs/response/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/response/tsconfig.lib.json"
+      }
+    },
+    "snowflake": {
+      "type": "library",
+      "root": "libs/snowflake",
+      "entryFile": "index",
+      "sourceRoot": "libs/snowflake/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/snowflake/tsconfig.lib.json"
+      }
+    },
+    "types": {
+      "type": "library",
+      "root": "libs/types",
+      "entryFile": "index",
+      "sourceRoot": "libs/types/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/types/tsconfig.lib.json"
+      }
+    }
   }
 }
