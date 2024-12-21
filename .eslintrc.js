@@ -22,6 +22,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'array-bracket-spacing':  ["error", "always", { "objectsInArrays": false }],
     'quotes': ["error", "single"],
-    'no-trailing-spaces': "error"
+    'no-trailing-spaces': "error",
+    'object-curly-spacing': ["error", "always"],
   },
 };
