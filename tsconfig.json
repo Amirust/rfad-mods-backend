@@ -7,16 +7,19 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
+    "esModuleInterop": true,
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
+    "strict": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
     "paths": {
       "@app/response": [
         "libs/response/src"
@@ -41,6 +44,30 @@
       ],
       "@app/db/*": [
         "libs/db/src/*"
+      ],
+      "@auth/": [
+        "src/auth"
+      ],
+      "@auth/*": [
+        "src/auth/*"
+      ],
+      "@dto/": [
+        "src/dto/"
+      ],
+      "@dto/*": [
+        "src/dto/*"
+      ],
+      "@app/oauth2": [
+        "libs/oauth2/src"
+      ],
+      "@app/oauth2/*": [
+        "libs/oauth2/src/*"
+      ],
+      "@app/utils": [
+        "libs/utils/src"
+      ],
+      "@app/utils/*": [
+        "libs/utils/src/*"
       ]
     }
   }

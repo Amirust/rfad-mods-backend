@@ -15,4 +15,7 @@ export class User extends SnowflakeId {
 
   @OneToMany(() => Mod, m => m.author)
   declare mods: Mod[]
+
+  @Column()
+  declare avatarHash: string
 }

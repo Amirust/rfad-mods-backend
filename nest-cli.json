@@ -42,6 +42,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/db/tsconfig.lib.json"
       }
+    },
+    "oauth2": {
+      "type": "library",
+      "root": "libs/oauth2",
+      "entryFile": "index",
+      "sourceRoot": "libs/oauth2/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/oauth2/tsconfig.lib.json"
+      }
+    },
+    "utils": {
+      "type": "library",
+      "root": "libs/utils",
+      "entryFile": "index",
+      "sourceRoot": "libs/utils/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/utils/tsconfig.lib.json"
+      }
     }
   }
 }

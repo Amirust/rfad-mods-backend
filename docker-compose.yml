@@ -34,8 +34,8 @@ services:
       - rfad
 
 networks:
-  detailing:
-    driver: rfad
+  rfad:
+    driver: bridge
 
 volumes:
   postgres_data:

@@ -28,12 +28,12 @@ export class SnowflakeService extends Snowflakify {
     const destructured = this.destructure(snowflake);
     return {
       timestamp: destructured.find((e) => e.identifier === 'TimestampFragment')
-        .value,
+        ?.value,
       sequence: destructured.find((e) => e.identifier === 'SequenceFragment')
-        .value,
+        ?.value,
       process: destructured.find((e) => e.identifier === 'ProcessFragment')
-        .value,
-      ip: destructured.find((e) => e.identifier === 'NetworkFragment').value,
+        ?.value,
+      ip: destructured.find((e) => e.identifier === 'NetworkFragment')?.value,
     };
   }
 }
