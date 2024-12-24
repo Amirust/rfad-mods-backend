@@ -6,4 +6,8 @@ export enum ErrorCode {
   TokenInvalid,
   ThirdPartyFail,
   ThirdPartyTokenRefreshFail,
+
+  // User
+  UserError = 30000,
+  UserNotFound,
 }

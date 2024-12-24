@@ -1,4 +1,4 @@
-import { CreateDateColumn, PrimaryColumn } from 'typeorm'
+import { CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 export class SnowflakeId {
   @PrimaryColumn()
@@ -6,4 +6,7 @@ export class SnowflakeId {
 
   @CreateDateColumn()
   declare createdAt: Date
+
+  @UpdateDateColumn()
+  declare updatedAt: Date
 }

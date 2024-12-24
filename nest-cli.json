@@ -60,6 +60,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/utils/tsconfig.lib.json"
       }
+    },
+    "djs": {
+      "type": "library",
+      "root": "libs/djs",
+      "entryFile": "index",
+      "sourceRoot": "libs/djs/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/djs/tsconfig.lib.json"
+      }
+    },
+    "commands": {
+      "type": "library",
+      "root": "libs/commands",
+      "entryFile": "index",
+      "sourceRoot": "libs/commands/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/commands/tsconfig.lib.json"
+      }
     }
   }
 }

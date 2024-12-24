@@ -36,6 +36,8 @@ export class AuthService {
     if (!user) {
       user = new User()
       user.id = userData.id
+      user.username = userData.username
+      user.globalName = userData.global_name ?? user.username
       user.avatarHash = userData.avatar ?? this.config.get('DEFAULT_AVATAR') ?? ''
     }
 

@@ -68,6 +68,18 @@
       ],
       "@app/utils/*": [
         "libs/utils/src/*"
+      ],
+      "@app/djs": [
+        "libs/djs/src"
+      ],
+      "@app/djs/*": [
+        "libs/djs/src/*"
+      ],
+      "@app/commands": [
+        "libs/commands/src"
+      ],
+      "@app/commands/*": [
+        "libs/commands/src/*"
       ]
     }
   }

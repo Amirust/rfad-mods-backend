@@ -13,10 +13,18 @@ import { Oauth2Module } from '@app/oauth2';
 import { AuthGuard } from '@auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthService } from '@auth/auth.service';
+import { UsersController } from './users/users.controller';
+import { UsersService } from './users/users.service';
+import { DjsModule } from '@app/djs';
+import { GatewayIntentBits } from 'discord-api-types/v10';
+import { Client } from 'discord.js';
+import { CommandsModule } from '@app/commands';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ ConfigModule ],
       inject: [ ConfigService ],
@@ -56,15 +64,37 @@ import { AuthService } from '@auth/auth.service';
         token: cfg.getOrThrow('DISCORD_TOKEN'),
       }),
     }),
+    DjsModule.forRootAsync({
+      imports: [ ConfigModule ],
+      useFactory: (cfg: ConfigService) => ({
+        token: cfg.getOrThrow('DISCORD_TOKEN'),
+        client: () => {
+          return new Client({
+            intents: [
+              GatewayIntentBits.Guilds,
+              GatewayIntentBits.GuildMembers,
+              GatewayIntentBits.GuildMessages,
+              GatewayIntentBits.MessageContent
+            ],
+            presence: {
+              status: 'idle',
+            }
+          })
+        }
+      }),
+      inject: [ ConfigService ]
+    }),
+    CommandsModule
   ],
-  controllers: [ AppController, AuthController ],
+  controllers: [ AppController, AuthController, UsersController ],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    AuthService
+    AuthService,
+    UsersService
   ],
 })
 export class AppModule {}
