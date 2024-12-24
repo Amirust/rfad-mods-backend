@@ -19,6 +19,8 @@ import { DjsModule } from '@app/djs';
 import { GatewayIntentBits } from 'discord-api-types/v10';
 import { Client } from 'discord.js';
 import { CommandsModule } from '@app/commands';
+import { ModsController } from './mods/mods.controller';
+import { ModsService } from './mods/mods.service';
 
 @Module({
   imports: [
@@ -86,7 +88,7 @@ import { CommandsModule } from '@app/commands';
     }),
     CommandsModule
   ],
-  controllers: [ AppController, AuthController, UsersController ],
+  controllers: [ AppController, AuthController, UsersController, ModsController ],
   providers: [
     AppService,
     {
@@ -94,7 +96,8 @@ import { CommandsModule } from '@app/commands';
       useClass: AuthGuard,
     },
     AuthService,
-    UsersService
+    UsersService,
+    ModsService
   ],
 })
 export class AppModule {}

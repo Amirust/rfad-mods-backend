@@ -39,7 +39,7 @@ export class Mod extends SnowflakeId {
   declare tags: ModTags[]
 
   @ManyToOne(() => User, u => u.mods)
-  declare author: string
+  declare author: User
 
   @Column()
   declare downloadLink: string
@@ -49,5 +49,12 @@ export class Mod extends SnowflakeId {
     array: true,
     default: []
   })
-  declare additionalLinks?: AdditionalLink[]
+  declare additionalLinks: AdditionalLink[]
+
+  @Column({
+    array: true,
+    type: 'text',
+    default: []
+  })
+  declare images: string[]
 }

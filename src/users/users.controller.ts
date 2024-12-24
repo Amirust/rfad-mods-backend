@@ -11,16 +11,24 @@ export class UsersController {
   ) {}
 
   @Get(':id')
-  @RequireAuth()
-  async findOne(@Param('id') id: string, @TokenData() token: TokenPayload) {
-    if (id === '@me') id = token.id
+  async findOne(@Param('id') id: string) {
     return this.users.findOne(id)
   }
 
-  @Get(':id/full')
+  @Get('@me')
   @RequireAuth()
-  async findOneFull(@Param('id') id: string, @TokenData() token: TokenPayload) {
-    if (id === '@me') id = token.id
+  async findMe(@TokenData() token: TokenPayload) {
+    return this.users.findOne(token.id)
+  }
+
+  @Get(':id/full')
+  async findOneFull(@Param('id') id: string) {
     return this.users.findOneFull(id)
+  }
+
+  @Get('@me/full')
+  @RequireAuth()
+  async findMyMods(@TokenData() token: TokenPayload) {
+    return this.users.findOneFull(token.id)
   }
 }

@@ -10,4 +10,9 @@ export enum ErrorCode {
   // User
   UserError = 30000,
   UserNotFound,
+
+  // Mods
+  ModError = 40000,
+  ModNotFound,
+  ModNotOwned
 }

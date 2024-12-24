@@ -67,6 +67,22 @@ export class UsersService {
     };
   }
 
+  async getRawUser(id: string): Promise<User> {
+    const data = await this.users.findOneBy({
+      id,
+    });
+
+    if (!data) {
+      throw new NotFoundException({
+        code: ErrorCode.UserNotFound,
+      });
+    }
+
+    void this.softUpdate(data)
+
+    return data
+  }
+
   private async softUpdate(data: User): Promise<void> {
     if (data.updatedAt.getTime() > Date.now() + TimeLimits.SoftUpdateTimeout) return
 

@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import Snowflakify, {
   TimestampFragment,
   SequenceFragment,
-  ProcessFragment,
-  NetworkFragment,
 } from 'snowflakify';
 import { EPOCH } from '@app/types/constants';
 
@@ -12,10 +10,8 @@ export class SnowflakeService extends Snowflakify {
   constructor() {
     super({
       fragmentArray: [
-        new TimestampFragment(53, EPOCH),
-        new SequenceFragment(8),
-        new NetworkFragment(10, 'ipv4'),
-        new ProcessFragment(16),
+        new TimestampFragment(42, EPOCH),
+        new SequenceFragment(12),
       ],
     });
   }
