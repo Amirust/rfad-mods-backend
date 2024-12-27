@@ -121,4 +121,23 @@ export class ModsService {
 
     return this.findOne(mod.id);
   }
+
+  async increaseDownloads(id: string) {
+    const mod = await this.mods.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!mod)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    mod.downloads++;
+
+    await this.mods.save(mod);
+
+    this.logger.log(`Increased downloads for mod ${mod.id} to ${mod.downloads}`);
+  }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
 import { ModsService } from './mods.service';
 import { FindAllModsQueryDTO } from '@dto/FindAllModsQueryDTO';
 import { RequireAuth } from '@auth/auth.decorator';
@@ -6,6 +6,7 @@ import { TokenData } from '@auth/token.decorator';
 import { TokenPayload } from '@app/types/auth/Token';
 import { CreateModDTO } from '@dto/CreateModDTO';
 import { ModifyModDTO } from '@dto/ModifyModDTO';
+import { FastifyReply } from 'fastify';
 
 @Controller('mods')
 export class ModsController {
@@ -39,5 +40,14 @@ export class ModsController {
       ...body,
       authorId: token.id,
     });
+  }
+
+  @Get(':id/download')
+  async download(@Res() reply: FastifyReply, @Param('id') id: string) {
+    const mod = await this.mods.findOne(id);
+
+    await this.mods.increaseDownloads(id);
+
+    return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(mod.downloadLink);
   }
 }
