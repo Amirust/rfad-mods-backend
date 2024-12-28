@@ -9,6 +9,7 @@ import { CreateModDTO } from '@dto/CreateModDTO';
 import { SnowflakeService } from '@app/snowflake';
 import { UsersService } from '../users/users.service';
 import { ModifyModDTO } from '@dto/ModifyModDTO';
+import { DiscordService } from '../discord/discord.service';
 
 @Injectable()
 export class ModsService {
@@ -18,7 +19,8 @@ export class ModsService {
     @InjectRepository(Mod)
     private readonly mods: Repository<Mod>,
     private readonly snowflake: SnowflakeService,
-    private users: UsersService,
+    private readonly users: UsersService,
+    private readonly discord: DiscordService,
   ) {}
 
   async findOne(id: string): Promise<ModDTO> {
@@ -47,7 +49,6 @@ export class ModsService {
   }
 
   async findAll(tags: ModTags[]): Promise<ModDTO[]> {
-    console.log(tags);
     const data = await this.mods.find({
       where: {
         tags: ArrayContains(tags ?? []),
@@ -80,6 +81,12 @@ export class ModsService {
     mod.additionalLinks = data.additionalLinks;
     mod.images = data.images;
     mod.lastUpdate = new Date();
+
+    const [ channelId, messageId ] = await this.discord.createModChannel(mod);
+    if (channelId && messageId) {
+      mod.discordChannelId = channelId;
+      mod.discordMessageId = messageId;
+    }
 
     await this.mods.save(mod);
 
@@ -119,6 +126,8 @@ export class ModsService {
 
     this.logger.log(`Modified mod ${mod.id} by ${mod.author.username}`);
 
+    void this.discord.updateModInfo(mod);
+
     return this.findOne(mod.id);
   }
 
@@ -135,6 +144,8 @@ export class ModsService {
       });
 
     mod.downloads++;
+
+    void this.discord.updateModInfo(mod);
 
     await this.mods.save(mod);
 

@@ -78,6 +78,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/commands/tsconfig.lib.json"
       }
+    },
+    "message-template": {
+      "type": "library",
+      "root": "libs/message-template",
+      "entryFile": "index",
+      "sourceRoot": "libs/message-template/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/message-template/tsconfig.lib.json"
+      }
     }
   }
 }

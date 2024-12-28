@@ -57,4 +57,16 @@ export class Mod extends SnowflakeId {
     default: []
   })
   declare images: string[]
+
+  // Discord Info
+
+  @Column({
+    nullable: true
+  })
+  declare discordMessageId: string
+
+  @Column({
+    nullable: true
+  })
+  declare discordChannelId: string
 }

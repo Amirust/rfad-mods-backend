@@ -21,6 +21,8 @@ import { Client } from 'discord.js';
 import { CommandsModule } from '@app/commands';
 import { ModsController } from './mods/mods.controller';
 import { ModsService } from './mods/mods.service';
+import { DiscordService } from './discord/discord.service';
+import { MessageTemplateModule } from '@app/message-template';
 
 @Module({
   imports: [
@@ -86,7 +88,8 @@ import { ModsService } from './mods/mods.service';
       }),
       inject: [ ConfigService ]
     }),
-    CommandsModule
+    CommandsModule,
+    MessageTemplateModule
   ],
   controllers: [ AppController, AuthController, UsersController, ModsController ],
   providers: [
@@ -97,7 +100,8 @@ import { ModsService } from './mods/mods.service';
     },
     AuthService,
     UsersService,
-    ModsService
+    ModsService,
+    DiscordService
   ],
 })
 export class AppModule {}

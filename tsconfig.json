@@ -80,6 +80,12 @@
       ],
       "@app/commands/*": [
         "libs/commands/src/*"
+      ],
+      "@app/message-template": [
+        "libs/message-template/src"
+      ],
+      "@app/message-template/*": [
+        "libs/message-template/src/*"
       ]
     }
   }
