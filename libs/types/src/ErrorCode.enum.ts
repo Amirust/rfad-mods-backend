@@ -14,5 +14,15 @@ export enum ErrorCode {
   // Mods
   ModError = 40000,
   ModNotFound,
-  ModNotOwned
+  ModNotOwned,
+
+  // Discord
+  DiscordError = 50000,
+  DiscordChannelNotFound,
+  DiscordMessageNotFound,
+
+  // Other
+  InvalidInput = 60000,
+  FunctionalDisabled,
+  UserHasNoBoostyAccess,
 }

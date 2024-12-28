@@ -7,6 +7,7 @@ import { ErrorCode } from '@app/types/ErrorCode.enum';
 import { PublicFullUserDTO } from '@dto/PublicFullUserDTO';
 import { TimeLimits } from '@app/types/time-limits';
 import { DjsService } from '@app/djs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,9 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly users: Repository<User>,
-    private djs: DjsService
+
+    private readonly config: ConfigService,
+    private readonly djs: DjsService
   ) {}
 
   async findOne(id: string): Promise<PublicPartialUserDTO> {
@@ -81,6 +84,29 @@ export class UsersService {
     void this.softUpdate(data)
 
     return data
+  }
+
+  async checkBoostyPermission(id: string): Promise<boolean> {
+    if (!Boolean(this.config.get<boolean>('DISCORD_FUNCTIONAL_ENABLED'))) throw new NotFoundException({
+      code: ErrorCode.FunctionalDisabled,
+    })
+
+    const data = await this.users.findOneBy({
+      id,
+    });
+
+    if (!data) {
+      throw new NotFoundException({
+        code: ErrorCode.UserNotFound,
+      });
+    }
+
+    void this.softUpdate(data)
+
+    const guild = await this.djs.client.guilds.fetch(this.config.getOrThrow<string>('DISCORD_GUILD_ID'))
+    const member = await guild.members.fetch(id)
+
+    return member.roles.cache.has(this.config.getOrThrow<string>('DISCORD_BOOSTY_ROLE_ID'))
   }
 
   private async softUpdate(data: User): Promise<void> {

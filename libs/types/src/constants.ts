@@ -4,3 +4,4 @@ export const ALGORITHM = 'aes-256-cbc';
 
 // Decorator Symbols
 export const AUTH_DECORATOR_KEY = Symbol('REQUIRE_AUTH');
+export const BOOSTY_DECORATOR_KEY = Symbol('REQUIRE_BOOSTY');
