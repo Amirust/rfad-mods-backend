@@ -48,11 +48,13 @@ export class ModsService {
     }
   }
 
-  async findAll(tags: ModTags[]): Promise<ModDTO[]> {
+  async findAll(tags: ModTags[], page: number, limit: number): Promise<ModDTO[]> {
     const data = await this.mods.find({
       where: {
         tags: ArrayContains(tags ?? []),
       },
+      take: limit,
+      skip: page * limit,
       relations: [ 'author' ],
     });
 

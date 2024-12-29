@@ -9,6 +9,7 @@ import { ModifyModDTO } from '@dto/ModifyModDTO';
 import { FastifyReply } from 'fastify';
 import { RequireBoosty } from '../boosty/boosty.decorator';
 import { BoostyGuard } from '../boosty/boosty.guard';
+import { Limits } from '@app/types/limits.enum';
 
 @Controller('mods')
 @UseGuards(BoostyGuard)
@@ -25,7 +26,7 @@ export class ModsController {
 
   @Get()
   async findAll(@Query() query: FindAllModsQueryDTO) {
-    return this.mods.findAll(query.tags);
+    return this.mods.findAll(query.tags, query.page ?? 1, query.limit ?? Limits.DefaultRecPerPageLimit);
   }
 
   @Post()

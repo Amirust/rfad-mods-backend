@@ -3,4 +3,5 @@ export enum Limits {
   ModDescriptionMaxLength = 2000,
   MinTagsPerMod = 1,
   MaxTagsPerMod = 5,
+  DefaultRecPerPageLimit = 6,
 }
