@@ -10,6 +10,7 @@ import { SnowflakeService } from '@app/snowflake';
 import { UsersService } from '../users/users.service';
 import { ModifyModDTO } from '@dto/ModifyModDTO';
 import { DiscordService } from '../discord/discord.service';
+import { FindResultDTO } from '@dto/FindResultDTO';
 
 @Injectable()
 export class ModsService {
@@ -48,7 +49,7 @@ export class ModsService {
     }
   }
 
-  async findAll(tags: ModTags[], page: number, limit: number): Promise<ModDTO[]> {
+  async findAll(tags: ModTags[], page: number, limit: number): Promise<FindResultDTO> {
     const data = await this.mods.find({
       where: {
         tags: ArrayContains(tags ?? []),
@@ -58,16 +59,25 @@ export class ModsService {
       relations: [ 'author' ],
     });
 
-    return data.map(mod => ({
-      ...mod,
-      authorId: mod.author.id,
-      author: {
-        id: mod.author.id,
-        username: mod.author.username,
-        globalName: mod.author.globalName,
-        avatarHash: mod.author.avatarHash,
-      }
-    }));
+    const count = await this.mods.count({
+      where: {
+        tags: ArrayContains(tags ?? []),
+      },
+    })
+
+    return {
+      totalPages: count / limit,
+      mods: data.map(mod => ({
+        ...mod,
+        authorId: mod.author.id,
+        author: {
+          id: mod.author.id,
+          username: mod.author.username,
+          globalName: mod.author.globalName,
+          avatarHash: mod.author.avatarHash,
+        }
+      }))
+    }
   }
 
   async create(data: CreateModDTO): Promise<ModDTO> {
