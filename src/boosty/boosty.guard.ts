@@ -20,7 +20,7 @@ export class BoostyGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly auth: AuthService,
-    private readonly users: UsersService,
+    private readonly users: UsersService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -34,6 +34,9 @@ export class BoostyGuard implements CanActivate {
     const fastifyRequest = context
       .switchToHttp()
       .getRequest<WithToken<FastifyRequest>>();
+
+    const id = (fastifyRequest.params as Record<string, any>).id as string; // Mod ID
+    if (!id) return true
 
     if (fastifyRequest.headers.authorization === undefined)
       if (requireBoosty)
@@ -54,7 +57,7 @@ export class BoostyGuard implements CanActivate {
 
     const data = await this.auth.decodeToken(token);
 
-    if (!(await this.users.checkBoostyPermission(data.id))) {
+    if (!(await this.users.checkBoostyPermission(data.id, 1 /* TODO: Boosty Tier */))) {
       throw new UnauthorizedException({ code: ErrorCode.UserHasNoBoostyAccess });
     }
 

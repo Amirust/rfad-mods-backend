@@ -54,6 +54,8 @@ export class DiscordService {
 
     const message = (await channel.messages.fetch()).first()!;
 
+    void message.pin();
+
     this.logger.log(`Created channel ${channel.id} for mod ${mod.id}`);
 
     return [ channel.id, message.id ];

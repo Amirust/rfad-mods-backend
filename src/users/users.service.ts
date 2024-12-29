@@ -8,6 +8,7 @@ import { PublicFullUserDTO } from '@dto/PublicFullUserDTO';
 import { TimeLimits } from '@app/types/time-limits';
 import { DjsService } from '@app/djs';
 import { ConfigService } from '@nestjs/config';
+import { BoostyTierEnum } from '@app/types/djs/boosty-tier.enum';
 
 @Injectable()
 export class UsersService {
@@ -86,7 +87,7 @@ export class UsersService {
     return data
   }
 
-  async checkBoostyPermission(id: string): Promise<boolean> {
+  async checkBoostyPermission(id: string, requiredTier: BoostyTierEnum): Promise<boolean> {
     if (!Boolean(this.config.get<boolean>('DISCORD_FUNCTIONAL_ENABLED'))) throw new NotFoundException({
       code: ErrorCode.FunctionalDisabled,
     })
@@ -101,12 +102,22 @@ export class UsersService {
       });
     }
 
+    const allTiers = this.config.getOrThrow<string>('GUILD_BOOSTY_TIERS').split(',').map((tier, index) => {
+      return {
+        tier: index + 1 as BoostyTierEnum,
+        roleId: tier === 'NONE' ? '' : tier
+      }
+    })
+
     void this.softUpdate(data)
 
     const guild = await this.djs.client.guilds.fetch(this.config.getOrThrow<string>('DISCORD_GUILD_ID'))
     const member = await guild.members.fetch(id)
 
-    return member.roles.cache.has(this.config.getOrThrow<string>('DISCORD_BOOSTY_ROLE_ID'))
+    const userRoles = member.roles.cache.map(role => role.id)
+    const userHasTiers = allTiers.filter(tier => userRoles.includes(tier.roleId))
+
+    return userHasTiers.some(tier => tier.tier >= requiredTier)
   }
 
   private async softUpdate(data: User): Promise<void> {

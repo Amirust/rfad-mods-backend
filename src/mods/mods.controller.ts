@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { ModsService } from './mods.service';
 import { FindAllModsQueryDTO } from '@dto/FindAllModsQueryDTO';
 import { RequireAuth } from '@auth/auth.decorator';
@@ -7,14 +7,18 @@ import { TokenPayload } from '@app/types/auth/Token';
 import { CreateModDTO } from '@dto/CreateModDTO';
 import { ModifyModDTO } from '@dto/ModifyModDTO';
 import { FastifyReply } from 'fastify';
+import { RequireBoosty } from '../boosty/boosty.decorator';
+import { BoostyGuard } from '../boosty/boosty.guard';
 
 @Controller('mods')
+@UseGuards(BoostyGuard)
 export class ModsController {
   constructor(
     private readonly mods: ModsService,
   ) {}
 
   @Get(':id')
+  @RequireBoosty()
   async findOne(id: string) {
     return this.mods.findOne(id);
   }
