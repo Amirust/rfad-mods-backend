@@ -7,7 +7,6 @@ import { TokenPayload } from '@app/types/auth/Token';
 import { CreateModDTO } from '@dto/CreateModDTO';
 import { ModifyModDTO } from '@dto/ModifyModDTO';
 import { FastifyReply } from 'fastify';
-import { RequireBoosty } from '../boosty/boosty.decorator';
 import { BoostyGuard } from '../boosty/boosty.guard';
 import { Limits } from '@app/types/limits.enum';
 
@@ -19,8 +18,7 @@ export class ModsController {
   ) {}
 
   @Get(':id')
-  @RequireBoosty()
-  async findOne(id: string) {
+  async findOne(@Param('id') id: string) {
     return this.mods.findOne(id);
   }
 
