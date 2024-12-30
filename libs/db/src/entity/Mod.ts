@@ -17,6 +17,11 @@ export class Mod extends SnowflakeId {
   declare description: string
 
   @Column({
+    default: ''
+  })
+  declare installGuide: string
+
+  @Column({
     type: 'enum',
     enum: VersionsEnum,
     array: true
@@ -46,7 +51,6 @@ export class Mod extends SnowflakeId {
 
   @Column({
     type: 'jsonb',
-    array: true,
     default: []
   })
   declare additionalLinks: AdditionalLink[]
@@ -59,7 +63,6 @@ export class Mod extends SnowflakeId {
   declare images: string[]
 
   // Discord Info
-
   @Column({
     nullable: true
   })

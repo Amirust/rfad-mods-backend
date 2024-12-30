@@ -14,9 +14,16 @@ export class FindAllModsQueryDTO {
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => {
+    if (!value) return 1;
+    return +value
+  })
   declare page: number;
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) =>
+    +value
+  )
   declare limit: number;
 }

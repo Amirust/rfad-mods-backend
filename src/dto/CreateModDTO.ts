@@ -32,6 +32,11 @@ export class CreateModDTO {
   @MaxLength(Limits.ModDescriptionMaxLength)
   declare description: string
 
+  @IsString()
+  @MinLength(1)
+  @MaxLength(Limits.ModInstallGuideMaxLength)
+  declare installGuide: string
+
   @IsEnum(VersionsEnum, { each: true })
   declare versions: VersionsEnum[]
 

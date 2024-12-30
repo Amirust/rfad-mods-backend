@@ -36,6 +36,12 @@ export class ModifyModDTO {
   declare description?: string
 
   @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(Limits.ModInstallGuideMaxLength)
+  declare installGuide?: string
+
+  @IsOptional()
   @IsEnum(VersionsEnum, { each: true })
   declare versions?: VersionsEnum[]
 

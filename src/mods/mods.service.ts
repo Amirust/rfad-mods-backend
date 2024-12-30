@@ -25,6 +25,7 @@ export class ModsService {
   ) {}
 
   async findOne(id: string): Promise<ModDTO> {
+    console.log('findOne', id);
     const data = await this.mods.findOne({
       where: {
         id,
@@ -55,8 +56,11 @@ export class ModsService {
         tags: ArrayContains(tags ?? []),
       },
       take: limit,
-      skip: page * limit,
+      skip: (page-1) * limit,
       relations: [ 'author' ],
+      order: {
+        lastUpdate: 'DESC',
+      }
     });
 
     const count = await this.mods.count({
@@ -66,7 +70,7 @@ export class ModsService {
     })
 
     return {
-      totalPages: count / limit,
+      totalPages: Math.ceil(count / limit),
       mods: data.map(mod => ({
         ...mod,
         authorId: mod.author.id,
@@ -87,6 +91,7 @@ export class ModsService {
     mod.name = data.name;
     mod.shortDescription = data.shortDescription;
     mod.description = data.description;
+    mod.installGuide = data.installGuide;
     mod.versions = data.versions;
     mod.tags = data.tags;
     mod.downloadLink = data.downloadLink;
@@ -127,6 +132,7 @@ export class ModsService {
     mod.name = data.name ?? mod.name;
     mod.shortDescription = data.shortDescription ?? mod.shortDescription;
     mod.description = data.description ?? mod.description;
+    mod.installGuide = data.installGuide ?? mod.installGuide;
     mod.versions = data.versions ?? mod.versions;
     mod.tags = data.tags ?? mod.tags;
     mod.downloadLink = data.downloadLink ?? mod.downloadLink;
