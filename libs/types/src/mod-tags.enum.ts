@@ -26,4 +26,11 @@ export enum ModTags {
   HUD,
   Information,
   Fonts,
+
+  // Only for Boosty
+  BoostyTier1 = 290,
+  BoostyTier2,
+  BoostyTier3,
+  BoostyTier4,
+  BoostyTier5,
 }

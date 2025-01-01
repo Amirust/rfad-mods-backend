@@ -25,7 +25,6 @@ export class ModsService {
   ) {}
 
   async findOne(id: string): Promise<ModDTO> {
-    console.log('findOne', id);
     const data = await this.mods.findOne({
       where: {
         id,

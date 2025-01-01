@@ -12,6 +12,8 @@ import { WithToken } from '@app/types/auth/Token';
 import { ErrorCode } from '@app/types/ErrorCode.enum';
 import { AuthService } from '@auth/auth.service';
 import { UsersService } from '../users/users.service';
+import { BoostyService } from './boosty.service';
+import { BoostyTierEnum } from '@app/types/djs/boosty-tier.enum';
 
 @Injectable()
 export class BoostyGuard implements CanActivate {
@@ -20,11 +22,12 @@ export class BoostyGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly auth: AuthService,
-    private readonly users: UsersService
+    private readonly users: UsersService,
+    private readonly bmods: BoostyService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requireBoosty = this.reflector.getAllAndOverride(BOOSTY_DECORATOR_KEY, [
+    const { value: requireBoosty, minimalTier } = this.reflector.getAllAndOverride(BOOSTY_DECORATOR_KEY, [
       context.getHandler(),
       context.getClass,
     ]);
@@ -56,8 +59,9 @@ export class BoostyGuard implements CanActivate {
     }
 
     const data = await this.auth.decodeToken(token);
+    const mod = await this.bmods.findOne(id);
 
-    if (!(await this.users.checkBoostyPermission(data.id, 1 /* TODO: Boosty Tier */))) {
+    if (!(await this.users.checkBoostyPermission(data.id, minimalTier ? minimalTier as BoostyTierEnum : mod.requiredTier))) {
       throw new UnauthorizedException({ code: ErrorCode.UserHasNoBoostyAccess });
     }
 

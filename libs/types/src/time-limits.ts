@@ -10,4 +10,6 @@ export enum Time {
 
 export enum TimeLimits {
   SoftUpdateTimeout = Time.Hour,
+  CacheDefaultTTL = Time.Minute * 5,
+  CacheCleanupInterval = Time.Minute * 30,
 }

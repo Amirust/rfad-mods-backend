@@ -120,6 +120,39 @@ export class UsersService {
     return userHasTiers.some(tier => tier.tier >= requiredTier)
   }
 
+  async checkBoostyPermissionBulk(id: string, requiredTiers: BoostyTierEnum[]): Promise<boolean[]> {
+    if (!Boolean(this.config.get<boolean>('DISCORD_FUNCTIONAL_ENABLED'))) throw new NotFoundException({
+      code: ErrorCode.FunctionalDisabled,
+    })
+
+    const data = await this.users.findOneBy({
+      id,
+    });
+
+    if (!data) {
+      throw new NotFoundException({
+        code: ErrorCode.UserNotFound,
+      });
+    }
+
+    const allTiers = this.config.getOrThrow<string>('GUILD_BOOSTY_TIERS').split(',').map((tier, index) => {
+      return {
+        tier: index + 1 as BoostyTierEnum,
+        roleId: tier === 'NONE' ? '' : tier
+      }
+    })
+
+    void this.softUpdate(data)
+
+    const guild = await this.djs.client.guilds.fetch(this.config.getOrThrow<string>('DISCORD_GUILD_ID'))
+    const member = await guild.members.fetch(id)
+
+    const userRoles = member.roles.cache.map(role => role.id)
+    const userHasTiers = allTiers.filter(tier => userRoles.includes(tier.roleId))
+
+    return requiredTiers.map(requiredTier => userHasTiers.some(tier => tier.tier >= requiredTier))
+  }
+
   private async softUpdate(data: User): Promise<void> {
     if (data.updatedAt.getTime() > Date.now() + TimeLimits.SoftUpdateTimeout) return
 

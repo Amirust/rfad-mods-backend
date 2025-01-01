@@ -23,6 +23,11 @@ import { ModsController } from './mods/mods.controller';
 import { ModsService } from './mods/mods.service';
 import { DiscordService } from './discord/discord.service';
 import { MessageTemplateModule } from '@app/message-template';
+import { BoostyController } from './boosty/boosty.controller';
+import { BoostyService } from './boosty/boosty.service';
+import { CacheService } from './cache/cache.service';
+import { PresetsController } from './presets/presets.controller';
+import { PresetsService } from './presets/presets.service';
 
 @Module({
   imports: [
@@ -91,7 +96,7 @@ import { MessageTemplateModule } from '@app/message-template';
     CommandsModule,
     MessageTemplateModule
   ],
-  controllers: [ AppController, AuthController, UsersController, ModsController ],
+  controllers: [ AppController, AuthController, UsersController, ModsController, BoostyController, PresetsController ],
   providers: [
     AppService,
     {
@@ -101,7 +106,10 @@ import { MessageTemplateModule } from '@app/message-template';
     AuthService,
     UsersService,
     ModsService,
-    DiscordService
+    DiscordService,
+    BoostyService,
+    CacheService,
+    PresetsService
   ],
 })
 export class AppModule {}
