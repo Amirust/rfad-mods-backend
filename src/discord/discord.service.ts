@@ -10,6 +10,10 @@ import {
   ThreadChannel
 } from 'discord.js';
 import { MessageTemplateService } from '@app/message-template';
+import { PresetMod } from '@app/db/entity/PresetMod';
+
+export type ModTypeString = 'mods' | 'presets';
+export type ModType = Mod | PresetMod;
 
 @Injectable()
 export class DiscordService {
@@ -24,11 +28,11 @@ export class DiscordService {
     private readonly template: MessageTemplateService,
   ) {}
 
-  async createModChannel(mod: Mod): Promise<[string | undefined, string | undefined]> {
+  async createModChannel(mod: ModType, type: ModTypeString): Promise<[string | undefined, string | undefined]> {
     if (!this.enabled) return [ undefined, undefined ];
 
     const forum = await this.djs.client.channels.fetch(
-      this.config.getOrThrow<string>('DISCORD_MODS_FORUM_ID'),
+      this.config.getOrThrow<string>(`DISCORD_${type.toUpperCase()}_FORUM_ID`),
     ) as ForumChannel | undefined;
 
     if (!forum) {
@@ -48,7 +52,7 @@ export class DiscordService {
           lastUpdate: mod.lastUpdate,
           lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
         }),
-        components: [ await this.createButtons(mod) ],
+        components: [ await this.createButtons(mod, 'mods') ],
       }
     });
 
@@ -56,12 +60,12 @@ export class DiscordService {
 
     void message.pin();
 
-    this.logger.log(`Created channel ${channel.id} for mod ${mod.id}`);
+    this.logger.log(`Created channel ${channel.id} for mod (${type}) ${mod.id}`);
 
     return [ channel.id, message.id ];
   }
 
-  async updateModInfo(mod: Mod) {
+  async updateModInfo(mod: ModType, type: ModTypeString) {
     if (!this.enabled || !mod.discordChannelId || !mod.discordMessageId) return;
 
     const channel = await this.getModChannel(mod.discordChannelId);
@@ -76,7 +80,7 @@ export class DiscordService {
       lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
     });
 
-    const row = await this.createButtons(mod);
+    const row = await this.createButtons(mod, type);
 
     await channel.edit({
       name: mod.name,
@@ -87,7 +91,7 @@ export class DiscordService {
       components: [ row ],
     })
 
-    this.logger.log(`Updated info for mod ${mod.id}`);
+    this.logger.log(`Updated info for mod (${type}) ${mod.id}`);
   }
 
   private async getModChannel(id: string): Promise<ThreadChannel> {
@@ -107,10 +111,10 @@ export class DiscordService {
     return channel.messages.fetch(id);
   }
 
-  private async createButtons(mod: Mod): Promise<ActionRowBuilder<ButtonBuilder>> {
+  private async createButtons(mod: ModType, type: 'mods' | 'presets'): Promise<ActionRowBuilder<ButtonBuilder>> {
     const row = new ActionRowBuilder();
     const downloadButton = new ButtonBuilder()
-      .setURL(`${this.config.getOrThrow('APP_BASE_URL')}/mods/${mod.id}/download`)
+      .setURL(`${this.config.getOrThrow('APP_BASE_URL')}/${type}/${mod.id}/download`)
       .setLabel('Скачать')
       .setStyle(ButtonStyle.Link);
 

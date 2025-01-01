@@ -1,13 +1,13 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { PresetTags } from '@app/types/preset-tags.enum';
-import { VersionsEnum } from '@app/types/mods/versions.enum';
 import { User } from '@app/db/entity/User';
 import { AdditionalLink } from '@app/types/mods/AdditionalLink';
+import { SnowflakeId } from '@app/db/entity/SnowflakeId';
 
 // I didn't use extends because this version of TypeORM has bugs.
 // https://github.com/typeorm/typeorm/issues/10895
 @Entity('preset_mods')
-export class PresetMod {
+export class PresetMod extends SnowflakeId {
   @Column()
   declare name: string
 
@@ -21,13 +21,6 @@ export class PresetMod {
     default: ''
   })
   declare installGuide: string
-
-  @Column({
-    type: 'enum',
-    enum: VersionsEnum,
-    array: true
-  })
-  declare versions: VersionsEnum[]
 
   @Column({
     default: 0

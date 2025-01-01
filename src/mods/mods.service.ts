@@ -98,7 +98,7 @@ export class ModsService {
     mod.images = data.images;
     mod.lastUpdate = new Date();
 
-    const [ channelId, messageId ] = await this.discord.createModChannel(mod);
+    const [ channelId, messageId ] = await this.discord.createModChannel(mod, 'mods');
     if (channelId && messageId) {
       mod.discordChannelId = channelId;
       mod.discordMessageId = messageId;
@@ -143,7 +143,7 @@ export class ModsService {
 
     this.logger.log(`Modified mod ${mod.id} by ${mod.author.username}`);
 
-    void this.discord.updateModInfo(mod);
+    void this.discord.updateModInfo(mod, 'mods');
 
     return this.findOne(mod.id);
   }
@@ -162,7 +162,7 @@ export class ModsService {
 
     mod.downloads++;
 
-    void this.discord.updateModInfo(mod);
+    void this.discord.updateModInfo(mod, 'mods');
 
     await this.mods.save(mod);
 
