@@ -19,7 +19,9 @@ export class BoostyController {
   }
 
   @Get()
-  @RequireBoosty(true, BoostyTierEnum.Nobility)
+  @RequireBoosty({
+    minimalTier: BoostyTierEnum.Nobility,
+  })
   async findAll(@Query() query: FindAllModsQueryDTO, @TokenData() token: TokenPayload) {
     return this.bmods.findAll(query.tags, query.page ?? 1, query.limit ?? Limits.DefaultRecPerPageLimit, token.id);
   }

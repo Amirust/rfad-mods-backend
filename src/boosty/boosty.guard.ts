@@ -14,6 +14,7 @@ import { AuthService } from '@auth/auth.service';
 import { UsersService } from '../users/users.service';
 import { BoostyService } from './boosty.service';
 import { BoostyTierEnum } from '@app/types/djs/boosty-tier.enum';
+import { RequireBoostyParams } from './boosty.decorator';
 
 @Injectable()
 export class BoostyGuard implements CanActivate {
@@ -27,10 +28,14 @@ export class BoostyGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { value: requireBoosty, minimalTier } = this.reflector.getAllAndOverride(BOOSTY_DECORATOR_KEY, [
+    const params = this.reflector.getAllAndOverride(BOOSTY_DECORATOR_KEY, [
       context.getHandler(),
       context.getClass,
-    ]);
+    ]) as RequireBoostyParams;
+
+    if (!params || !params.require) return true;
+
+    const { require: requireBoosty, minimalTier } = params;
 
     if (!requireBoosty) return true;
 
