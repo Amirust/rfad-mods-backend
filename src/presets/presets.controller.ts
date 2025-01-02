@@ -9,7 +9,7 @@ import { CreatePresetDTO } from '@dto/CreatePresetDTO';
 import { ModifyPresetDTO } from '@dto/ModifyPresetDTO';
 import { FindAllPresetsQueryDTO } from '@dto/FindAllPresetsQueryDTO';
 
-@Controller('mods')
+@Controller('presets')
 export class PresetsController {
   constructor(
     private readonly presets: PresetsService,
