@@ -1,5 +1,5 @@
 export enum PresetTags {
-  // Preset tags starts with 300, 100-200 is reserved for mod tags
+  // Preset tags starts with 300, 100-299i s reserved for mod tags
 
   // Race
   Argonian = 300,
@@ -16,4 +16,8 @@ export enum PresetTags {
 
   // Additional
   HighPoly = 311,
+  Male = 312,
+  Female = 313,
+  Vanilla = 314,
+  AdditionalModsRequired = 315,
 }

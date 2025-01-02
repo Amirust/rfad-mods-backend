@@ -153,6 +153,31 @@ export class UsersService {
     return requiredTiers.map(requiredTier => userHasTiers.some(tier => tier.tier >= requiredTier))
   }
 
+  async checkModeratorPermission(id: string): Promise<boolean> {
+    if (!Boolean(this.config.get<boolean>('DISCORD_FUNCTIONAL_ENABLED'))) throw new NotFoundException({
+      code: ErrorCode.FunctionalDisabled,
+    })
+
+    const data = await this.users.findOneBy({
+      id,
+    });
+
+    if (!data) {
+      throw new NotFoundException({
+        code: ErrorCode.UserNotFound,
+      });
+    }
+
+    void this.softUpdate(data)
+
+    const guild = await this.djs.client.guilds.fetch(this.config.getOrThrow<string>('DISCORD_GUILD_ID'))
+    const member = await guild.members.fetch(id)
+
+    const moderatorRoleId = this.config.getOrThrow<string>('DISCORD_MODERATOR_ROLE_ID')
+
+    return member.roles.cache.some(role => role.id === moderatorRoleId)
+  }
+
   private async softUpdate(data: User): Promise<void> {
     if (data.updatedAt.getTime() > Date.now() + TimeLimits.SoftUpdateTimeout) return
 

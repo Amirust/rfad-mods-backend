@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
 import { ModsService } from './mods.service';
 import { FindAllModsQueryDTO } from '@dto/FindAllModsQueryDTO';
 import { RequireAuth } from '@auth/auth.decorator';
@@ -41,6 +41,12 @@ export class ModsController {
       ...body,
       authorId: token.id,
     });
+  }
+
+  @Delete(':id')
+  @RequireAuth()
+  async delete(@Param('id') id: string, @TokenData() token: TokenPayload) {
+    return this.mods.delete(id, token.id);
   }
 
   @Get(':id/download')

@@ -94,6 +94,15 @@ export class DiscordService {
     this.logger.log(`Updated info for mod (${type}) ${mod.id}`);
   }
 
+  async deleteModChannel(mod: ModType, type: ModTypeString) {
+    if (!this.enabled || !mod.discordChannelId) return;
+
+    const channel = await this.getModChannel(mod.discordChannelId);
+    await channel.delete();
+
+    this.logger.log(`Deleted channel ${channel.id} for mod (${type}) ${mod.id}`);
+  }
+
   private async getModChannel(id: string): Promise<ThreadChannel> {
     const channel = await this.djs.client.channels.fetch(id);
 

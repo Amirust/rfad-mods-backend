@@ -25,11 +25,11 @@ export class BoostyController {
   }
 
   @Get(':id/download')
-  @RequireBoosty(true)
-  async download(@Res() reply: FastifyReply, @Param('id') id: string) {
+  @RequireBoosty()
+  async download(@Res() reply: FastifyReply, @Param('id') id: string, @TokenData() token: TokenPayload) {
     const mod = await this.bmods.findOne(id);
 
-    await this.bmods.increaseDownloads(id);
+    await this.bmods.increaseDownloads(id, token.id);
 
     return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(mod.downloadLink);
   }

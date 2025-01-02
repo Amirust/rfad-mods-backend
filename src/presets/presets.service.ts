@@ -123,7 +123,7 @@ export class PresetsService {
         code: ErrorCode.ModNotFound,
       });
 
-    if (preset.author.id !== userId) throw new ForbiddenException({
+    if (preset.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
 
@@ -144,6 +144,33 @@ export class PresetsService {
     void this.discord.updateModInfo(preset, 'presets');
 
     return this.findOne(preset.id);
+  }
+
+
+  async delete(id: string, userId: string) {
+    const mod = await this.presets.findOne({
+      where: {
+        id,
+      },
+      relations: [ 'author' ],
+    });
+
+    if (!mod)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    if (mod.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+      code: ErrorCode.ModNotOwned,
+    })
+
+    await this.presets.delete({
+      id,
+    });
+
+    void this.discord.deleteModChannel(mod, 'presets');
+
+    this.logger.log(`Deleted preset ${mod.id} by ${mod.author.username}`);
   }
 
   async increaseDownloads(id: string) {

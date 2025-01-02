@@ -124,7 +124,7 @@ export class ModsService {
         code: ErrorCode.ModNotFound,
       });
 
-    if (mod.author.id !== userId) throw new ForbiddenException({
+    if (mod.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
 
@@ -146,6 +146,32 @@ export class ModsService {
     void this.discord.updateModInfo(mod, 'mods');
 
     return this.findOne(mod.id);
+  }
+
+  async delete(id: string, userId: string) {
+    const mod = await this.mods.findOne({
+      where: {
+        id,
+      },
+      relations: [ 'author' ],
+    });
+
+    if (!mod)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    if (mod.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+      code: ErrorCode.ModNotOwned,
+    })
+
+    await this.mods.delete({
+      id,
+    });
+
+    void this.discord.deleteModChannel(mod, 'mods');
+
+    this.logger.log(`Deleted mod ${mod.id} by ${mod.author.username}`);
   }
 
   async increaseDownloads(id: string) {

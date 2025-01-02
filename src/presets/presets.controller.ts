@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
 import { RequireAuth } from '@auth/auth.decorator';
 import { TokenData } from '@auth/token.decorator';
 import { TokenPayload } from '@app/types/auth/Token';
@@ -41,6 +41,12 @@ export class PresetsController {
       ...body,
       authorId: token.id,
     });
+  }
+
+  @Delete(':id')
+  @RequireAuth()
+  async delete(@Param('id') id: string, @TokenData() token: TokenPayload) {
+    return this.presets.delete(id, token.id);
   }
 
   @Get(':id/download')

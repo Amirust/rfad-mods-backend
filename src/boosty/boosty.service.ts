@@ -91,7 +91,7 @@ export class BoostyService {
     }
   }
 
-  async increaseDownloads(id: string) {
+  async increaseDownloads(id: string, userId: string) {
     const mod = await this.bmods.findOne({
       where: {
         id,
@@ -107,6 +107,6 @@ export class BoostyService {
 
     await this.bmods.save(mod);
 
-    this.logger.log(`Increased downloads for mod ${mod.id} to ${mod.downloads}`);
+    this.logger.log(`Increased downloads for boosty mod ${mod.id} to ${mod.downloads}. User ${userId}`);
   }
 }
