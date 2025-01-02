@@ -28,6 +28,8 @@ import { BoostyService } from './boosty/boosty.service';
 import { CacheService } from './cache/cache.service';
 import { PresetsController } from './presets/presets.controller';
 import { PresetsService } from './presets/presets.service';
+import { BoostyMod } from '@app/db/entity/BoostyMod';
+import { PresetMod } from '@app/db/entity/PresetMod';
 
 @Module({
   imports: [
@@ -44,13 +46,17 @@ import { PresetsService } from './presets/presets.service';
         logging: false,
         entities: [
           User,
-          Mod
+          Mod,
+          BoostyMod,
+          PresetMod
         ],
       }),
     }),
     TypeOrmModule.forFeature([
       User,
-      Mod
+      Mod,
+      BoostyMod,
+      PresetMod
     ]),
     ResponseModule,
     SnowflakeModule,
