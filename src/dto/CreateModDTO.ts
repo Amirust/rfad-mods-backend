@@ -20,6 +20,7 @@ export class CreateModDTO {
 
   @IsString()
   @MinLength(1)
+  @MaxLength(Limits.ModNameMaxLength)
   declare name: string
 
   @IsString()

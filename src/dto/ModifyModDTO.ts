@@ -21,6 +21,7 @@ export class ModifyModDTO {
   @IsOptional()
   @IsString()
   @MinLength(1)
+  @MaxLength(Limits.ModNameMaxLength)
   declare name?: string
 
   @IsOptional()

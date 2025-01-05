@@ -10,6 +10,7 @@ export enum ErrorCode {
   // User
   UserError = 30000,
   UserNotFound,
+  UserFilesLimitReached,
 
   // Mods
   ModError = 40000,

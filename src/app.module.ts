@@ -30,6 +30,9 @@ import { PresetsController } from './presets/presets.controller';
 import { PresetsService } from './presets/presets.service';
 import { BoostyMod } from '@app/db/entity/BoostyMod';
 import { PresetMod } from '@app/db/entity/PresetMod';
+import { FilesController } from './files/files.controller';
+import { FilesService } from './files/files.service';
+import { FastifyMulterModule } from '@nest-lab/fastify-multer';
 
 @Module({
   imports: [
@@ -100,9 +103,14 @@ import { PresetMod } from '@app/db/entity/PresetMod';
       inject: [ ConfigService ]
     }),
     CommandsModule,
-    MessageTemplateModule
+    MessageTemplateModule,
+    FastifyMulterModule.register({
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB,
+      }
+    })
   ],
-  controllers: [ AppController, AuthController, UsersController, ModsController, BoostyController, PresetsController ],
+  controllers: [ AppController, AuthController, UsersController, ModsController, BoostyController, PresetsController, FilesController ],
   providers: [
     AppService,
     {
@@ -115,7 +123,8 @@ import { PresetMod } from '@app/db/entity/PresetMod';
     DiscordService,
     BoostyService,
     CacheService,
-    PresetsService
+    PresetsService,
+    FilesService
   ],
 })
 export class AppModule {}

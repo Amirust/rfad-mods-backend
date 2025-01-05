@@ -87,6 +87,10 @@ export class UsersService {
     return data
   }
 
+  async updateRawUser(user: User) {
+    return await this.users.save(user)
+  }
+
   async checkBoostyPermission(id: string, requiredTier: BoostyTierEnum): Promise<boolean> {
     if (!Boolean(this.config.get<boolean>('DISCORD_FUNCTIONAL_ENABLED'))) throw new NotFoundException({
       code: ErrorCode.FunctionalDisabled,
