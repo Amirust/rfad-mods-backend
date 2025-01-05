@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   DeleteObjectCommand,
@@ -7,6 +7,7 @@ import {
   S3,
 } from '@aws-sdk/client-s3';
 import { extensionToMime } from '@app/types/files.interface';
+import { ErrorCode } from '@app/types/ErrorCode.enum';
 
 @Injectable()
 export class FilesService {
@@ -44,6 +45,11 @@ export class FilesService {
         Prefix: `images/${user}_${hash}`,
       }),
     );
+
+    if (!filesList.Contents || !filesList.Contents.length)
+      throw new NotFoundException({
+        code: ErrorCode.FileNotFound,
+      })
 
     if (filesList.Contents && filesList.Contents.length > 0)
       for (const file of filesList.Contents)

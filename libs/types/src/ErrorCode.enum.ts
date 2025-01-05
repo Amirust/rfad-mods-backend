@@ -26,4 +26,8 @@ export enum ErrorCode {
   InvalidInput = 60000,
   FunctionalDisabled,
   UserHasNoBoostyAccess,
+
+  // Files
+  FileError = 70000,
+  FileNotFound,
 }
