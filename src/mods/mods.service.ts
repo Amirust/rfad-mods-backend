@@ -91,7 +91,6 @@ export class ModsService {
     mod.shortDescription = data.shortDescription;
     mod.description = data.description;
     mod.installGuide = data.installGuide;
-    mod.versions = data.versions;
     mod.tags = data.tags;
     mod.downloadLink = data.downloadLink;
     mod.additionalLinks = data.additionalLinks;
@@ -132,7 +131,6 @@ export class ModsService {
     mod.shortDescription = data.shortDescription ?? mod.shortDescription;
     mod.description = data.description ?? mod.description;
     mod.installGuide = data.installGuide ?? mod.installGuide;
-    mod.versions = data.versions ?? mod.versions;
     mod.tags = data.tags ?? mod.tags;
     mod.downloadLink = data.downloadLink ?? mod.downloadLink;
     mod.additionalLinks = data.additionalLinks ?? mod.additionalLinks;

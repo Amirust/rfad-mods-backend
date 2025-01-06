@@ -1,6 +1,6 @@
 import {
   Controller, Delete,
-  ForbiddenException,
+  ForbiddenException, Get,
   NotFoundException, Param,
   Post,
   UnsupportedMediaTypeException,
@@ -18,6 +18,7 @@ import sharp from 'sharp';
 import crypto from 'node:crypto';
 import { mimeToExtension } from '@app/types/files.interface';
 import { UploadedFileResultDTO } from '@dto/UploadedFileResultDTO';
+import { FilesQuotaDTO } from '@dto/FilesQuotaDTO';
 
 @Controller('files')
 export class FilesController {
@@ -82,6 +83,23 @@ export class FilesController {
 
     return {
       ok: true,
+    };
+  }
+
+  @Get('/quota')
+  @RequireAuth()
+  async getQuota(@TokenData() token: TokenPayload): Promise<FilesQuotaDTO> {
+    const user = await this.users.getRawUser(token.id);
+
+    if (!user)
+      throw new NotFoundException({
+        code: ErrorCode.UserNotFound,
+      });
+
+    return {
+      limit: user.filesLimit,
+      uploaded: user.uploadedFiles,
+      remaining: user.filesLimit - user.uploadedFiles,
     };
   }
 }

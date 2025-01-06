@@ -48,11 +48,16 @@ export class DiscordService {
         content: this.template.renderTemplate({
           title: mod.name,
           description: mod.description,
-          downloads: mod.downloads,
+          downloads: mod.downloads ?? 0,
+          installGuide: mod.installGuide,
           lastUpdate: mod.lastUpdate,
           lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
         }),
         components: [ await this.createButtons(mod, 'mods') ],
+        files: mod.images.map((image) => ({
+          attachment: image,
+          name: image.split('/').at(-1),
+        })),
       }
     });
 
@@ -75,7 +80,8 @@ export class DiscordService {
     message.content = this.template.renderTemplate({
       title: mod.name,
       description: mod.description,
-      downloads: mod.downloads,
+      downloads: mod.downloads ?? 0,
+      installGuide: mod.installGuide,
       lastUpdate: mod.lastUpdate,
       lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
     });

@@ -8,7 +8,6 @@ import {
   ValidateNested
 } from 'class-validator';
 import { ModTags } from '@app/types/mod-tags.enum';
-import { VersionsEnum } from '@app/types/mods/versions.enum';
 import { AdditionalLinkDTO } from '@dto/AdditionalLinkDTO';
 import { Type } from 'class-transformer';
 import { Limits } from '@app/types/limits.enum';
@@ -24,22 +23,20 @@ export class CreateModDTO {
   declare name: string
 
   @IsString()
-  @MinLength(1)
+  @MinLength(3)
   @MaxLength(Limits.ModShortDescriptionMaxLength)
   declare shortDescription: string
 
   @IsString()
-  @MinLength(1)
+  @MinLength(Limits.ModDescriptionMinLength)
   @MaxLength(Limits.ModDescriptionMaxLength)
   declare description: string
 
   @IsString()
   @MinLength(1)
+  @MinLength(Limits.ModInstallGuideMinLength)
   @MaxLength(Limits.ModInstallGuideMaxLength)
   declare installGuide: string
-
-  @IsEnum(VersionsEnum, { each: true })
-  declare versions: VersionsEnum[]
 
   @IsEnum(ModTags, { each: true })
   @ArrayMinSize(Limits.MinTagsPerMod)
@@ -54,5 +51,6 @@ export class CreateModDTO {
   declare additionalLinks: AdditionalLinkDTO[]
 
   @IsUrl({}, { each: true })
+  @ArrayMaxSize(Limits.MaxImagesPerMod)
   declare images: string[]
 }

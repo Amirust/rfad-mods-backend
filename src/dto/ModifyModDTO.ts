@@ -8,7 +8,6 @@ import {
   ValidateNested
 } from 'class-validator';
 import { ModTags } from '@app/types/mod-tags.enum';
-import { VersionsEnum } from '@app/types/mods/versions.enum';
 import { AdditionalLinkDTO } from '@dto/AdditionalLinkDTO';
 import { Type } from 'class-transformer';
 import { Limits } from '@app/types/limits.enum';
@@ -41,10 +40,6 @@ export class ModifyModDTO {
   @MinLength(1)
   @MaxLength(Limits.ModInstallGuideMaxLength)
   declare installGuide?: string
-
-  @IsOptional()
-  @IsEnum(VersionsEnum, { each: true })
-  declare versions?: VersionsEnum[]
 
   @IsOptional()
   @IsEnum(ModTags, { each: true })

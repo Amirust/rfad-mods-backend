@@ -3,7 +3,6 @@ import { SnowflakeId } from '@app/db/entity/SnowflakeId';
 import { User } from '@app/db/entity/User';
 import { ModTags } from '@app/types/mod-tags.enum';
 import { AdditionalLink } from '@app/types/mods/AdditionalLink';
-import { VersionsEnum } from '@app/types/mods/versions.enum';
 
 @Entity()
 export class Mod extends SnowflakeId {
@@ -20,13 +19,6 @@ export class Mod extends SnowflakeId {
     default: ''
   })
   declare installGuide: string
-
-  @Column({
-    type: 'enum',
-    enum: VersionsEnum,
-    array: true
-  })
-  declare versions: VersionsEnum[]
 
   @Column({
     default: 0
