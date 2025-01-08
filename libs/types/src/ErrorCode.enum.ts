@@ -16,6 +16,7 @@ export enum ErrorCode {
   ModError = 40000,
   ModNotFound,
   ModNotOwned,
+  NoModeratorPermission,
 
   // Discord
   DiscordError = 50000,

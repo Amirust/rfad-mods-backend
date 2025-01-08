@@ -8,7 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
 import { BOOSTY_DECORATOR_KEY } from '@app/types/constants';
-import { WithToken } from '@app/types/auth/Token';
+import { TOKEN_KEY, WithToken } from '@app/types/auth/Token';
 import { ErrorCode } from '@app/types/ErrorCode.enum';
 import { AuthService } from '@auth/auth.service';
 import { UsersService } from '../users/users.service';
@@ -43,8 +43,9 @@ export class BoostyGuard implements CanActivate {
       .switchToHttp()
       .getRequest<WithToken<FastifyRequest>>();
 
-    const id = (fastifyRequest.params as Record<string, any>).id as string; // Mod ID
-    if (!id) return true
+    const id = (fastifyRequest.params as Record<string, any>)?.id as string; // Mod ID
+
+    if (!id && !minimalTier) return true;
 
     if (fastifyRequest.headers.authorization === undefined)
       if (requireBoosty)
@@ -64,11 +65,13 @@ export class BoostyGuard implements CanActivate {
     }
 
     const data = await this.auth.decodeToken(token);
-    const mod = await this.bmods.findOne(id);
+    const mod = id ? await this.bmods.findOne(id) : null
 
-    if (!(await this.users.checkBoostyPermission(data.id, minimalTier ? minimalTier as BoostyTierEnum : mod.requiredTier))) {
+    if (!(await this.users.checkBoostyPermission(data.id, minimalTier ? minimalTier as BoostyTierEnum : mod!.requiredTier))) {
       throw new UnauthorizedException({ code: ErrorCode.UserHasNoBoostyAccess });
     }
+
+    fastifyRequest[TOKEN_KEY] = await this.auth.decodeToken(token);
 
     this.logger.verbose(
       `Token decoded. User ${data.id} has Boosty permission`,

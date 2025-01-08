@@ -1,23 +1,25 @@
 export enum PresetTags {
-  // Preset tags starts with 300, 100-299i s reserved for mod tags
+  // Preset tags starts with 300, 100-299 is reserved for mod tags
 
   // Race
-  Argonian = 300,
-  Breton = 301,
-  DarkElf = 302,
-  HighElf = 303,
-  Imperial = 304,
-  Khajiit = 305,
-  Nord = 306,
-  Orc = 307,
-  Redguard = 308,
-  WoodElf = 309,
-  SnowElf = 310,
+  Race = 300,
+  Argonian ,
+  Breton ,
+  DarkElf ,
+  HighElf ,
+  Imperial ,
+  Khajiit ,
+  Nord ,
+  Orc ,
+  Redguard ,
+  WoodElf ,
+  SnowElf ,
 
   // Additional
-  HighPoly = 311,
-  Male = 312,
-  Female = 313,
-  Vanilla = 314,
-  AdditionalModsRequired = 315,
+  Additional = 320,
+  HighPoly ,
+  Male ,
+  Female ,
+  Vanilla ,
+  AdditionalModsRequired
 }

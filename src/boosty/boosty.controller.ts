@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { BoostyService } from './boosty.service';
 import { RequireBoosty } from './boosty.decorator';
 import { BoostyTierEnum } from '@app/types/djs/boosty-tier.enum';
@@ -7,8 +7,13 @@ import { Limits } from '@app/types/limits.enum';
 import { TokenData } from '@auth/token.decorator';
 import { TokenPayload } from '@app/types/auth/Token';
 import { FastifyReply } from 'fastify';
+import { RequireAuth } from '@auth/auth.decorator';
+import { CreateBoostyModDTO } from '@dto/CreateBoostyModDTO';
+import { BoostyGuard } from './boosty.guard';
+import { AuthGuard } from '@auth/auth.guard';
 
 @Controller('boosty')
+@UseGuards(AuthGuard, BoostyGuard)
 export class BoostyController {
   constructor(private readonly bmods: BoostyService) {}
 
@@ -34,5 +39,14 @@ export class BoostyController {
     await this.bmods.increaseDownloads(id, token.id);
 
     return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(mod.downloadLink);
+  }
+
+  @Post()
+  @RequireAuth()
+  async create(@TokenData() token: TokenPayload, @Body() body: CreateBoostyModDTO) {
+    return this.bmods.create({
+      ...body,
+      authorId: token.id,
+    });
   }
 }

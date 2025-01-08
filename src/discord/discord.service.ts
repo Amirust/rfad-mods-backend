@@ -53,7 +53,7 @@ export class DiscordService {
           lastUpdate: mod.lastUpdate,
           lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
         }),
-        components: [ await this.createButtons(mod, 'mods') ],
+        components: [ await this.createButtons(mod, type) ],
         files: mod.images.map((image) => ({
           attachment: image,
           name: image.split('/').at(-1),

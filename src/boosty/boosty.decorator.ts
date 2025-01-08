@@ -9,6 +9,6 @@ export interface RequireBoostyParams {
 
 export const RequireBoosty = (params?: RequireBoostyParams) =>
   SetMetadata(BOOSTY_DECORATOR_KEY, {
-    value: params?.require ?? true,
+    require: params?.require ?? true,
     minimalTier: params?.minimalTier,
   });

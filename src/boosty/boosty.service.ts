@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ArrayContains, Repository } from 'typeorm';
 import { BoostyMod } from '@app/db/entity/BoostyMod';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,8 @@ import { ErrorCode } from '@app/types/ErrorCode.enum';
 import { BoostyModDTO } from '@dto/BoostyModDTO';
 import { UsersService } from '../users/users.service';
 import { CacheService } from '../cache/cache.service';
+import { CreateBoostyModDTO } from '@dto/CreateBoostyModDTO';
+import { SnowflakeService } from '@app/snowflake';
 
 @Injectable()
 export class BoostyService {
@@ -18,6 +20,7 @@ export class BoostyService {
     private readonly bmods: Repository<BoostyMod>,
     private readonly users: UsersService,
     private readonly cache: CacheService,
+    private readonly snowflake: SnowflakeService,
   ) {}
 
   async findOne(id: string): Promise<BoostyModDTO> {
@@ -108,5 +111,31 @@ export class BoostyService {
     await this.bmods.save(mod);
 
     this.logger.log(`Increased downloads for boosty mod ${mod.id} to ${mod.downloads}. User ${userId}`);
+  }
+
+  async create(data: CreateBoostyModDTO): Promise<BoostyModDTO> {
+    if (!(await this.users.checkModeratorPermission(data.authorId))) throw new ForbiddenException({
+      code: ErrorCode.NoModeratorPermission,
+    })
+
+    const mod = new BoostyMod();
+    mod.id = this.snowflake.nextStringId();
+    mod.author = await this.users.getRawUser(data.authorId);
+    mod.name = data.name;
+    mod.shortDescription = data.shortDescription;
+    mod.description = data.description;
+    mod.installGuide = data.installGuide;
+    mod.tags = data.tags;
+    mod.downloadLink = data.downloadLink;
+    mod.additionalLinks = data.additionalLinks;
+    mod.images = data.images;
+    mod.requiredTier = data.requiredTier;
+    mod.lastUpdate = new Date();
+
+    await this.bmods.save(mod);
+
+    this.logger.log(`Created boosty mod ${mod.id} by ${mod.author.username}`);
+
+    return this.findOne(mod.id);
   }
 }

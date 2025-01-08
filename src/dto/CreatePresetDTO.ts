@@ -38,7 +38,7 @@ export class CreatePresetDTO {
 
   @IsEnum(PresetTags, { each: true })
   @ArrayMinSize(Limits.MinTagsPerMod)
-  @ArrayMaxSize(Limits.MaxTagsPerMod)
+  @ArrayMaxSize(Limits.MaxTagsPerPreset)
   declare tags: PresetTags[]
 
   @IsString()
