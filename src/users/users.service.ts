@@ -183,7 +183,7 @@ export class UsersService {
   }
 
   private async softUpdate(data: User): Promise<void> {
-    if (data.updatedAt.getTime() > Date.now() + TimeLimits.SoftUpdateTimeout) return
+    if (data.updatedAt.getTime() + TimeLimits.SoftUpdateTimeout > Date.now()) return
 
     const updatedInfo = await this.djs.client.users.fetch(data.id)
 
