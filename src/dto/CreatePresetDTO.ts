@@ -15,7 +15,7 @@ import { PresetTags } from '@app/types/preset-tags.enum';
 export class CreatePresetDTO {
   @IsOptional()
   @IsString()
-  declare authorId: string
+  declare authorId?: string
 
   @IsString()
   @MinLength(1)

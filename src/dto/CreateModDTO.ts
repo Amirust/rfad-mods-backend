@@ -15,7 +15,7 @@ import { Limits } from '@app/types/limits.enum';
 export class CreateModDTO {
   @IsOptional()
   @IsString()
-  declare authorId: string
+  declare authorId?: string
 
   @IsString()
   @MinLength(1)

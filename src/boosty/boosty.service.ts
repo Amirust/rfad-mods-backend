@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ArrayContains, Repository } from 'typeorm';
 import { BoostyMod } from '@app/db/entity/BoostyMod';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -114,6 +114,10 @@ export class BoostyService {
   }
 
   async create(data: CreateBoostyModDTO): Promise<BoostyModDTO> {
+    if (!data.authorId) throw new UnauthorizedException({
+      code: ErrorCode.TokenInvalid
+    })
+
     if (!(await this.users.checkModeratorPermission(data.authorId))) throw new ForbiddenException({
       code: ErrorCode.NoModeratorPermission,
     })

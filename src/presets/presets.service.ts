@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ArrayContains, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorCode } from '@app/types/ErrorCode.enum';
@@ -84,6 +84,10 @@ export class PresetsService {
   }
 
   async create(data: CreatePresetDTO): Promise<PresetDTO> {
+    if (!data.authorId) throw new UnauthorizedException({
+      code: ErrorCode.TokenInvalid
+    })
+
     const preset = new PresetMod();
     preset.id = this.snowflake.nextStringId();
     preset.author = await this.users.getRawUser(data.authorId);

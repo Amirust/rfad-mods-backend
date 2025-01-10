@@ -37,7 +37,7 @@ export class PresetMod extends SnowflakeId {
   })
   declare tags: PresetTags[]
 
-  @ManyToOne(() => User, u => u.mods)
+  @ManyToOne(() => User, u => u.presets)
   declare author: User
 
   @Column()

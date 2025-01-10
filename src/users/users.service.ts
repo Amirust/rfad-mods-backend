@@ -4,11 +4,12 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PublicPartialUserDTO } from '@dto/PublicPartialUserDTO';
 import { ErrorCode } from '@app/types/ErrorCode.enum';
-import { PublicFullUserDTO } from '@dto/PublicFullUserDTO';
+import { ModPresetType, PublicFullUserDTO } from '@dto/PublicFullUserDTO';
 import { TimeLimits } from '@app/types/time-limits';
 import { DjsService } from '@app/djs';
 import { ConfigService } from '@nestjs/config';
 import { BoostyTierEnum } from '@app/types/djs/boosty-tier.enum';
+import addToPresetModType from '@app/utils/addToPresetModType';
 
 @Injectable()
 export class UsersService {
@@ -46,7 +47,7 @@ export class UsersService {
   async findOneFull(id: string): Promise<PublicFullUserDTO> {
     const data = await this.users.findOne({
       where: { id },
-      relations: [ 'mods' ],
+      relations: [ 'mods', 'presets' ],
     });
 
     if (!data) {
@@ -55,7 +56,25 @@ export class UsersService {
       });
     }
 
-    const { username, globalName, avatarHash, mods } = data
+    const { username, globalName, avatarHash, mods, presets } = data
+
+    const modsAndPresets: ModPresetType = [
+      ...addToPresetModType(mods, 'mod'),
+      ...addToPresetModType(presets, 'preset')
+    ]
+
+    const mostUsedTags = modsAndPresets.reduce((acc, mod) => {
+      mod.tags.forEach((tag: number) => {
+        const found = acc.find(t => t.tag === tag)
+        if (found)
+          found.count++
+        else
+          acc.push({ tag, count: 1 })
+      })
+      return acc
+    }, [] as { tag: number, count: number }[]).sort((a, b) => b.count - a.count).map(tag => tag.tag)
+
+    console.log(mostUsedTags)
 
     void this.softUpdate(data)
 
@@ -64,10 +83,11 @@ export class UsersService {
       username,
       avatarHash,
       globalName,
-      mostPopularModId: mods.sort((a, b) => b.downloads - a.downloads)[0]?.id ?? '',
-      modsPublished: mods.length,
-      lastActivity: mods.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0]?.updatedAt ?? null,
-      mostUsedTags: [], // TODO: Implement this
+      mods: modsAndPresets,
+      mostPopularModId: modsAndPresets.sort((a, b) => b.downloads - a.downloads)[0]?.id ?? '',
+      modsPublished: modsAndPresets.length,
+      lastActivity: modsAndPresets.sort((a, b) => b.lastUpdate.getTime() - a.lastUpdate.getTime())[0]?.lastUpdate ?? null,
+      mostUsedTags: mostUsedTags.splice(0, 5),
     };
   }
 

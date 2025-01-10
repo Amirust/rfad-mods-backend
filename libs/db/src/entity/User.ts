@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { SnowflakeId } from '@app/db/entity/SnowflakeId';
 import { Mod } from '@app/db/entity/Mod';
 import { Limits } from '@app/types/limits.enum';
+import { PresetMod } from '@app/db/entity/PresetMod';
 
 interface UserTokens {
   accessToken: string
@@ -25,6 +26,9 @@ export class User extends SnowflakeId {
 
   @OneToMany(() => Mod, m => m.author)
   declare mods: Mod[]
+
+  @OneToMany(() => PresetMod, m => m.author)
+  declare presets: PresetMod[]
 
   @Column({
     default: 0

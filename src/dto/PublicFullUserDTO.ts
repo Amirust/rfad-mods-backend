@@ -1,6 +1,11 @@
 import { PublicPartialUserDTO } from '@dto/PublicPartialUserDTO';
-import { IsDate, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ModTags } from '@app/types/mod-tags.enum';
+import { ModDTO } from '@dto/ModDTO';
+import { PresetDTO } from '@dto/PresetDTO';
+import { PresetTags } from '@app/types/preset-tags.enum';
+
+export type ModPresetType = (Omit<(ModDTO | PresetDTO) & { type: 'mod' | 'preset' }, 'author'>)[]
 
 export class PublicFullUserDTO extends PublicPartialUserDTO {
   @IsString()
@@ -13,6 +18,9 @@ export class PublicFullUserDTO extends PublicPartialUserDTO {
   @IsOptional()
   declare lastActivity?: Date
 
-  @IsEnum(ModTags, { each: true })
-  declare mostUsedTags: ModTags[]
+  @IsArray()
+  declare mostUsedTags: (ModTags | PresetTags)[]
+
+  @IsArray()
+  declare mods: ModPresetType
 }

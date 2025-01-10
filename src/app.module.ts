@@ -33,6 +33,8 @@ import { PresetMod } from '@app/db/entity/PresetMod';
 import { FilesController } from './files/files.controller';
 import { FilesService } from './files/files.service';
 import { FastifyMulterModule } from '@nest-lab/fastify-multer';
+import { PopularController } from './popular/popular.controller';
+import { PopularService } from './popular/popular.service';
 
 @Module({
   imports: [
@@ -110,7 +112,7 @@ import { FastifyMulterModule } from '@nest-lab/fastify-multer';
       }
     })
   ],
-  controllers: [ AppController, AuthController, UsersController, ModsController, BoostyController, PresetsController, FilesController ],
+  controllers: [ AppController, AuthController, UsersController, ModsController, BoostyController, PresetsController, FilesController, PopularController ],
   providers: [
     AppService,
     {
@@ -124,7 +126,8 @@ import { FastifyMulterModule } from '@nest-lab/fastify-multer';
     BoostyService,
     CacheService,
     PresetsService,
-    FilesService
+    FilesService,
+    PopularService
   ],
 })
 export class AppModule {}

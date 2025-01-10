@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ArrayContains, Repository } from 'typeorm';
 import { Mod } from '@app/db/entity/Mod';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -84,6 +84,10 @@ export class ModsService {
   }
 
   async create(data: CreateModDTO): Promise<ModDTO> {
+    if (!data.authorId) throw new UnauthorizedException({
+      code: ErrorCode.TokenInvalid
+    })
+
     const mod = new Mod();
     mod.id = this.snowflake.nextStringId();
     mod.author = await this.users.getRawUser(data.authorId);
