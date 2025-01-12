@@ -51,10 +51,8 @@ export class PresetsController {
 
   @Get(':id/download')
   async download(@Res() reply: FastifyReply, @Param('id') id: string) {
-    const mod = await this.presets.findOne(id);
+    const link = await this.presets.increaseDownloads(id);
 
-    await this.presets.increaseDownloads(id);
-
-    return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(mod.downloadLink);
+    return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(link);
   }
 }

@@ -11,6 +11,7 @@ import { UsersService } from '../users/users.service';
 import { ModifyModDTO } from '@dto/ModifyModDTO';
 import { DiscordService } from '../discord/discord.service';
 import { FindResultDTO } from '@dto/FindResultDTO';
+import { PopularService } from '../popular/popular.service';
 
 @Injectable()
 export class ModsService {
@@ -22,6 +23,7 @@ export class ModsService {
     private readonly snowflake: SnowflakeService,
     private readonly users: UsersService,
     private readonly discord: DiscordService,
+    private readonly popular: PopularService,
   ) {}
 
   async findOne(id: string): Promise<ModDTO> {
@@ -192,8 +194,12 @@ export class ModsService {
 
     void this.discord.updateModInfo(mod, 'mods');
 
+    void this.popular.processDownload(mod.id, 'mod');
+
     await this.mods.save(mod);
 
     this.logger.log(`Increased downloads for mod ${mod.id} to ${mod.downloads}`);
+
+    return mod.downloadLink
   }
 }

@@ -11,6 +11,7 @@ import { CreatePresetDTO } from '@dto/CreatePresetDTO';
 import { FindPresetsResultDTO } from '@dto/FindPresetsResultDTO';
 import { ModifyPresetDTO } from '@dto/ModifyPresetDTO';
 import { PresetTags } from '@app/types/preset-tags.enum';
+import { PopularService } from '../popular/popular.service';
 
 @Injectable()
 export class PresetsService {
@@ -22,6 +23,7 @@ export class PresetsService {
     private readonly snowflake: SnowflakeService,
     private readonly users: UsersService,
     private readonly discord: DiscordService,
+    private readonly popular: PopularService,
   ) {}
 
   async findOne(id: string): Promise<PresetDTO> {
@@ -193,8 +195,12 @@ export class PresetsService {
 
     void this.discord.updateModInfo(preset, 'presets');
 
+    void this.popular.processDownload(preset.id, 'preset');
+
     await this.presets.save(preset);
 
     this.logger.log(`Increased downloads for preset ${preset.id} to ${preset.downloads}`);
+
+    return preset.downloadLink;
   }
 }

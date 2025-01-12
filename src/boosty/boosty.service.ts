@@ -111,6 +111,8 @@ export class BoostyService {
     await this.bmods.save(mod);
 
     this.logger.log(`Increased downloads for boosty mod ${mod.id} to ${mod.downloads}. User ${userId}`);
+
+    return mod.downloadLink;
   }
 
   async create(data: CreateBoostyModDTO): Promise<BoostyModDTO> {

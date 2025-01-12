@@ -51,10 +51,8 @@ export class ModsController {
 
   @Get(':id/download')
   async download(@Res() reply: FastifyReply, @Param('id') id: string) {
-    const mod = await this.mods.findOne(id);
+    const link = await this.mods.increaseDownloads(id);
 
-    await this.mods.increaseDownloads(id);
-
-    return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(mod.downloadLink);
+    return reply.status(HttpStatus.PERMANENT_REDIRECT).redirect(link);
   }
 }

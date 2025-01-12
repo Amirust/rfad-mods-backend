@@ -35,6 +35,9 @@ import { FilesService } from './files/files.service';
 import { FastifyMulterModule } from '@nest-lab/fastify-multer';
 import { PopularController } from './popular/popular.controller';
 import { PopularService } from './popular/popular.service';
+import { RecentDownloadHistory } from '@app/db/entity/RecentDownloadHistory';
+import { OldDownloadHistory } from '@app/db/entity/OldDownloadHistory';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -53,7 +56,9 @@ import { PopularService } from './popular/popular.service';
           User,
           Mod,
           BoostyMod,
-          PresetMod
+          PresetMod,
+          RecentDownloadHistory,
+          OldDownloadHistory,
         ],
       }),
     }),
@@ -61,7 +66,9 @@ import { PopularService } from './popular/popular.service';
       User,
       Mod,
       BoostyMod,
-      PresetMod
+      PresetMod,
+      RecentDownloadHistory,
+      OldDownloadHistory,
     ]),
     ResponseModule,
     SnowflakeModule,
@@ -110,7 +117,8 @@ import { PopularService } from './popular/popular.service';
       limits: {
         fileSize: 5 * 1024 * 1024, // 5MB,
       }
-    })
+    }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [ AppController, AuthController, UsersController, ModsController, BoostyController, PresetsController, FilesController, PopularController ],
   providers: [
