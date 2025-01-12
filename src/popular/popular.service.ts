@@ -52,6 +52,7 @@ export class PopularService implements OnModuleInit {
       .addSelect('recent_downloads.type', 'type')
       .addSelect('COUNT(recent_downloads.modId)', 'downloadCount')
       .groupBy('recent_downloads.modId')
+      .addGroupBy('recent_downloads.type')
       .orderBy('"downloadCount"', 'DESC')
       .limit(3)
       .getRawMany();
