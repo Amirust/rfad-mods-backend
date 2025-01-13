@@ -29,7 +29,7 @@ export class Oauth2Service {
         redirectUri: redirect,
       })
     } catch(e) {
-      console.log(e)
+      this.logger.error(e)
       throw new BadRequestException({ code: ErrorCode.ThirdPartyFail })
     }
   }
