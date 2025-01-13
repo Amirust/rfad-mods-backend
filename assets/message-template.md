@@ -1,3 +1,4 @@
+-# {{author}}
 {{description}}
 
 ### Установка
@@ -5,3 +6,4 @@
 
 -# Последнее обновление: {{lastUpdateSerialized}}
 -# Скачиваний: {{downloads}}
+-# Автор: {{author}}

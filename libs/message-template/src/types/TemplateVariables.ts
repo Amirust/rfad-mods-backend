@@ -5,4 +5,5 @@ export interface TemplateVariables {
   installGuide: string,
   lastUpdate: Date;
   lastUpdateSerialized: string;
+  author: string
 }

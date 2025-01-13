@@ -52,6 +52,7 @@ export class DiscordService {
           installGuide: mod.installGuide,
           lastUpdate: mod.lastUpdate,
           lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
+          author: mod.author.globalName
         }),
         components: [ await this.createButtons(mod, type) ],
         files: mod.images.map((image) => ({
@@ -84,6 +85,7 @@ export class DiscordService {
       installGuide: mod.installGuide,
       lastUpdate: mod.lastUpdate,
       lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
+      author: mod.author.globalName
     });
 
     const row = await this.createButtons(mod, type);
