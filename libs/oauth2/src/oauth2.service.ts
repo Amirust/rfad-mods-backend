@@ -30,14 +30,6 @@ export class Oauth2Service {
       })
     } catch(e) {
       this.logger.error(e)
-      console.log({
-        grantType: 'authorization_code',
-        code,
-        scope: this.config.scopes,
-        clientId: this.config.id,
-        clientSecret: this.config.secret,
-        redirectUri: redirect,
-      })
       throw new BadRequestException({ code: ErrorCode.ThirdPartyFail })
     }
   }
