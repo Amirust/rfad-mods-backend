@@ -133,17 +133,13 @@ export class ModsService {
       code: ErrorCode.ModNotOwned,
     })
 
-    mod.name = data.name ?? mod.name;
-    mod.shortDescription = data.shortDescription ?? mod.shortDescription;
-    mod.description = data.description ?? mod.description;
-    mod.installGuide = data.installGuide ?? mod.installGuide;
-    mod.tags = data.tags ?? mod.tags;
-    mod.downloadLink = data.downloadLink ?? mod.downloadLink;
-    mod.additionalLinks = data.additionalLinks ?? mod.additionalLinks;
-    mod.images = data.images ?? mod.images;
-    mod.lastUpdate = new Date();
+    const toUpdate = {
+      ...data,
+      authorId: undefined,
+      lastUpdate: new Date(),
+    }
 
-    await this.mods.save(mod);
+    await this.mods.update(id, toUpdate);
 
     this.logger.log(`Modified mod ${mod.id} by ${mod.author.username}`);
 
@@ -176,6 +172,35 @@ export class ModsService {
     void this.discord.deleteModChannel(mod, 'mods');
 
     this.logger.log(`Deleted mod ${mod.id} by ${mod.author.username}`);
+  }
+
+  async getModifyData(id: string, userId: string) {
+    const data = await this.mods.findOne({
+      where: {
+        id,
+      },
+      relations: [ 'author' ],
+    });
+
+    if (!data)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    if (data.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+      code: ErrorCode.ModNotOwned,
+    })
+
+    return {
+      ...data,
+      authorId: data.author.id,
+      author: {
+        id: data.author.id,
+        username: data.author.username,
+        globalName: data.author.globalName,
+        avatarHash: data.author.avatarHash,
+      },
+    }
   }
 
   async increaseDownloads(id: string) {

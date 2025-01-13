@@ -139,6 +139,8 @@ export class UsersService {
     const member = await guild.members.fetch(id)
 
     const userRoles = member.roles.cache.map(role => role.id)
+    const userIsModerator = userRoles.some(role => role === this.config.getOrThrow<string>('DISCORD_MODERATOR_ROLE_ID'))
+    if (userIsModerator) return true
     const userHasTiers = allTiers.filter(tier => userRoles.includes(tier.roleId))
 
     return userHasTiers.some(tier => tier.tier >= requiredTier)
@@ -172,6 +174,9 @@ export class UsersService {
     const member = await guild.members.fetch(id)
 
     const userRoles = member.roles.cache.map(role => role.id)
+    const userIsModerator = userRoles.some(role => role === this.config.getOrThrow<string>('DISCORD_MODERATOR_ROLE_ID'))
+    if (userIsModerator) return requiredTiers.map(() => true)
+
     const userHasTiers = allTiers.filter(tier => userRoles.includes(tier.roleId))
 
     return requiredTiers.map(requiredTier => userHasTiers.some(tier => tier.tier >= requiredTier))

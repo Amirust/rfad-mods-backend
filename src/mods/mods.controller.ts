@@ -43,6 +43,12 @@ export class ModsController {
     });
   }
 
+  @Get(':id/modify')
+  @RequireAuth()
+  async modifications(@Param('id') id: string, @TokenData() token: TokenPayload) {
+    return this.mods.getModifyData(id, token.id);
+  }
+
   @Delete(':id')
   @RequireAuth()
   async delete(@Param('id') id: string, @TokenData() token: TokenPayload) {

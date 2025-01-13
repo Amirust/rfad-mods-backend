@@ -57,8 +57,6 @@ export class PopularService implements OnModuleInit {
       .limit(3)
       .getRawMany();
 
-    this.logger.log('Fetched popular mods');
-
     return data.map(({ modId, type }) => ({
       modId,
       type,

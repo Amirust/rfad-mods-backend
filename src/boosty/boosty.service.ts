@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service';
 import { CacheService } from '../cache/cache.service';
 import { CreateBoostyModDTO } from '@dto/CreateBoostyModDTO';
 import { SnowflakeService } from '@app/snowflake';
+import { ModifyBoostyModDTO } from '@dto/ModifyBoostyModDTO';
 
 @Injectable()
 export class BoostyService {
@@ -143,5 +144,64 @@ export class BoostyService {
     this.logger.log(`Created boosty mod ${mod.id} by ${mod.author.username}`);
 
     return this.findOne(mod.id);
+  }
+
+  async modify(id: string, userId: string, data: ModifyBoostyModDTO): Promise<BoostyModDTO> {
+    const mod = await this.bmods.findOne({
+      where: {
+        id,
+      },
+      relations: [ 'author' ],
+    });
+
+    if (!mod)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    if (mod.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+      code: ErrorCode.ModNotOwned,
+    })
+
+    const toUpdate = {
+      ...data,
+      authorId: undefined,
+      lastUpdate: new Date(),
+    }
+
+    await this.bmods.update(id, toUpdate);
+
+    this.logger.log(`Modified boosty mod ${mod.id} by ${mod.author.username}`);
+
+    return this.findOne(mod.id);
+  }
+
+  async getModifyData(id: string, userId: string) {
+    const data = await this.bmods.findOne({
+      where: {
+        id,
+      },
+      relations: [ 'author' ],
+    });
+
+    if (!data)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    if (data.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+      code: ErrorCode.ModNotOwned,
+    })
+
+    return {
+      ...data,
+      authorId: data.author.id,
+      author: {
+        id: data.author.id,
+        username: data.author.username,
+        globalName: data.author.globalName,
+        avatarHash: data.author.avatarHash,
+      },
+    }
   }
 }

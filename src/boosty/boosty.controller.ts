@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { BoostyService } from './boosty.service';
 import { RequireBoosty } from './boosty.decorator';
 import { BoostyTierEnum } from '@app/types/djs/boosty-tier.enum';
@@ -11,6 +11,7 @@ import { RequireAuth } from '@auth/auth.decorator';
 import { CreateBoostyModDTO } from '@dto/CreateBoostyModDTO';
 import { BoostyGuard } from './boosty.guard';
 import { AuthGuard } from '@auth/auth.guard';
+import { ModifyBoostyModDTO } from '@dto/ModifyBoostyModDTO';
 
 @Controller('boosty')
 @UseGuards(AuthGuard, BoostyGuard)
@@ -46,5 +47,20 @@ export class BoostyController {
       ...body,
       authorId: token.id,
     });
+  }
+
+  @Patch(':id')
+  @RequireAuth()
+  async modify(@Param('id') id: string, @TokenData() token: TokenPayload, @Body() body: ModifyBoostyModDTO) {
+    return this.bmods.modify(id, token.id, {
+      ...body,
+      authorId: token.id,
+    });
+  }
+
+  @Get(':id/modify')
+  @RequireAuth()
+  async modifications(@Param('id') id: string, @TokenData() token: TokenPayload) {
+    return this.bmods.getModifyData(id, token.id);
   }
 }

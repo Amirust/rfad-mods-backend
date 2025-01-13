@@ -133,17 +133,13 @@ export class PresetsService {
       code: ErrorCode.ModNotOwned,
     })
 
-    preset.name = data.name ?? preset.name;
-    preset.shortDescription = data.shortDescription ?? preset.shortDescription;
-    preset.description = data.description ?? preset.description;
-    preset.installGuide = data.installGuide ?? preset.installGuide;
-    preset.tags = data.tags ?? preset.tags;
-    preset.downloadLink = data.downloadLink ?? preset.downloadLink;
-    preset.additionalLinks = data.additionalLinks ?? preset.additionalLinks;
-    preset.images = data.images ?? preset.images;
-    preset.lastUpdate = new Date();
+    const toUpdate = {
+      ...data,
+      authorId: undefined,
+      lastUpdate: new Date(),
+    }
 
-    await this.presets.save(preset);
+    await this.presets.update(id, toUpdate);
 
     this.logger.log(`Modified preset ${preset.id} by ${preset.author.username}`);
 
@@ -177,6 +173,35 @@ export class PresetsService {
     void this.discord.deleteModChannel(mod, 'presets');
 
     this.logger.log(`Deleted preset ${mod.id} by ${mod.author.username}`);
+  }
+
+  async getModifyData(id: string, userId: string) {
+    const data = await this.presets.findOne({
+      where: {
+        id,
+      },
+      relations: [ 'author' ],
+    });
+
+    if (!data)
+      throw new NotFoundException({
+        code: ErrorCode.ModNotFound,
+      });
+
+    if (data.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+      code: ErrorCode.ModNotOwned,
+    })
+
+    return {
+      ...data,
+      authorId: data.author.id,
+      author: {
+        id: data.author.id,
+        username: data.author.username,
+        globalName: data.author.globalName,
+        avatarHash: data.author.avatarHash,
+      },
+    }
   }
 
   async increaseDownloads(id: string) {
