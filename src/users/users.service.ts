@@ -74,8 +74,6 @@ export class UsersService {
       return acc
     }, [] as { tag: number, count: number }[]).sort((a, b) => b.count - a.count).map(tag => tag.tag)
 
-    console.log(mostUsedTags)
-
     void this.softUpdate(data)
 
     return {
