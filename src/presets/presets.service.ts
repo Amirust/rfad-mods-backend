@@ -188,7 +188,7 @@ export class PresetsService {
         code: ErrorCode.ModNotFound,
       });
 
-    if (data.author.id !== userId && !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+    if (!(await this.users.checkModeratorPermission(userId)) || data.author.id !== userId) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
 
