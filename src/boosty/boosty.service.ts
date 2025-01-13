@@ -159,7 +159,7 @@ export class BoostyService {
         code: ErrorCode.ModNotFound,
       });
 
-    if (mod.author.id !== userId || !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
+    if (mod.author.id !== userId && !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
 
@@ -189,7 +189,7 @@ export class BoostyService {
         code: ErrorCode.ModNotFound,
       });
 
-    if (!(await this.users.checkModeratorPermission(userId)) || data.author.id !== userId) throw new ForbiddenException({
+    if (data.author.id !== userId && !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
 
