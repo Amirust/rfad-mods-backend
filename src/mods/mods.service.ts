@@ -208,6 +208,7 @@ export class ModsService {
       where: {
         id,
       },
+      relations: [ 'author' ],
     });
 
     if (!mod)

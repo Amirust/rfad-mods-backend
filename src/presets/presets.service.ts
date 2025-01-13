@@ -209,6 +209,7 @@ export class PresetsService {
       where: {
         id,
       },
+      relations: [ 'author' ],
     });
 
     if (!preset)
