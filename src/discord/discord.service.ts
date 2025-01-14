@@ -56,8 +56,8 @@ export class DiscordService {
         }),
         components: [ await this.createButtons(mod, type) ],
         files: mod.images.map((image) => ({
-          attachment: image,
-          name: image.split('/').at(-1),
+          attachment: image.url,
+          name: image.url.split('/').at(-1),
         })),
       }
     });
