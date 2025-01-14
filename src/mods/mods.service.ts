@@ -12,6 +12,7 @@ import { ModifyModDTO } from '@dto/ModifyModDTO';
 import { DiscordService } from '../discord/discord.service';
 import { FindResultDTO } from '@dto/FindResultDTO';
 import { PopularService } from '../popular/popular.service';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class ModsService {
@@ -24,6 +25,7 @@ export class ModsService {
     private readonly users: UsersService,
     private readonly discord: DiscordService,
     private readonly popular: PopularService,
+    private readonly files: FilesService,
   ) {}
 
   async findOne(id: string): Promise<ModDTO> {
@@ -132,6 +134,14 @@ export class ModsService {
     if (mod.author.id !== userId && !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
+
+    const removedImages = mod.images.filter(image => !data.images.find(newImage => newImage.url === image.url));
+    for (const image of removedImages) {
+      await this.files.deleteFile(userId, /_(\w{32})\.webp$/g.exec(image.url)![1]);
+
+      mod.author.uploadedFiles -= 1;
+      void this.users.updateRawUser(mod.author);
+    }
 
     const toUpdate = {
       ...mod,

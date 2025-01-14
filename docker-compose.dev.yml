@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - '3000:3000'
+      - '7000:7000'
     environment:
       DATABASE: postgres://${PG_USER}:${PG_PASSWORD}@db:5432
     depends_on:

@@ -12,6 +12,7 @@ import { FindPresetsResultDTO } from '@dto/FindPresetsResultDTO';
 import { ModifyPresetDTO } from '@dto/ModifyPresetDTO';
 import { PresetTags } from '@app/types/preset-tags.enum';
 import { PopularService } from '../popular/popular.service';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class PresetsService {
@@ -24,6 +25,7 @@ export class PresetsService {
     private readonly users: UsersService,
     private readonly discord: DiscordService,
     private readonly popular: PopularService,
+    private readonly files: FilesService,
   ) {}
 
   async findOne(id: string): Promise<PresetDTO> {
@@ -138,6 +140,14 @@ export class PresetsService {
       ...data,
       authorId: undefined,
       lastUpdate: new Date(),
+    }
+
+    const removedImages = preset.images.filter(image => !data.images.find(newImage => newImage.url === image.url));
+    for (const image of removedImages) {
+      await this.files.deleteFile(userId, /_(\w{32})\.webp$/g.exec(image.url)![1]);
+
+      preset.author.uploadedFiles -= 1;
+      void this.users.updateRawUser(preset.author);
     }
 
     const newData = await this.presets.save(toUpdate);
