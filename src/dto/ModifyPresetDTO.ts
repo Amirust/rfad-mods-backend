@@ -3,7 +3,7 @@ import {
   ArrayMinSize,
   IsEnum, IsOptional,
   IsString,
-  IsUrl, MaxLength,
+  MaxLength,
   MinLength,
   ValidateNested
 } from 'class-validator';
@@ -11,6 +11,7 @@ import { AdditionalLinkDTO } from '@dto/AdditionalLinkDTO';
 import { Type } from 'class-transformer';
 import { Limits } from '@app/types/limits.enum';
 import { PresetTags } from '@app/types/preset-tags.enum';
+import { ImageWithOrientationDTO } from '@dto/ImageWithOrientationDTO';
 
 export class ModifyPresetDTO {
   @IsOptional()
@@ -56,6 +57,8 @@ export class ModifyPresetDTO {
   declare additionalLinks?: AdditionalLinkDTO[]
 
   @IsOptional()
-  @IsUrl({}, { each: true })
-  declare images?: string[]
+  @ValidateNested({ each: true })
+  @ArrayMaxSize(Limits.MaxImagesPerMod)
+  @Type(() => ImageWithOrientationDTO)
+  declare images: ImageWithOrientationDTO[]
 }

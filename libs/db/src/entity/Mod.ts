@@ -49,10 +49,10 @@ export class Mod extends SnowflakeId {
 
   @Column({
     array: true,
-    type: 'text',
+    type: 'jsonb',
     default: []
   })
-  declare images: string[]
+  declare images: {url: string, orientation: 'vertical' | 'horizontal'}[]
 
   // Discord Info
   @Column({

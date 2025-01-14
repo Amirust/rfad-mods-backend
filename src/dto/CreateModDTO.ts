@@ -3,7 +3,7 @@ import {
   ArrayMinSize,
   IsEnum, IsOptional,
   IsString,
-  IsUrl, MaxLength,
+  MaxLength,
   MinLength,
   ValidateNested
 } from 'class-validator';
@@ -11,6 +11,7 @@ import { ModTags } from '@app/types/mod-tags.enum';
 import { AdditionalLinkDTO } from '@dto/AdditionalLinkDTO';
 import { Type } from 'class-transformer';
 import { Limits } from '@app/types/limits.enum';
+import { ImageWithOrientationDTO } from '@dto/ImageWithOrientationDTO';
 
 export class CreateModDTO {
   @IsOptional()
@@ -50,7 +51,8 @@ export class CreateModDTO {
   @Type(() => AdditionalLinkDTO)
   declare additionalLinks: AdditionalLinkDTO[]
 
-  @IsUrl({}, { each: true })
+  @ValidateNested({ each: true })
   @ArrayMaxSize(Limits.MaxImagesPerMod)
-  declare images: string[]
+  @Type(() => ImageWithOrientationDTO)
+  declare images: ImageWithOrientationDTO[]
 }
