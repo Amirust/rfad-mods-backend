@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-duplicate-enum-values: 0 */
 
 export enum Limits {
-  ModNameMaxLength = 25,
+  ModNameMaxLength = 35,
   ModShortDescriptionMaxLength = 50,
   ModDescriptionMinLength = 25,
   ModDescriptionMaxLength = 2000,
