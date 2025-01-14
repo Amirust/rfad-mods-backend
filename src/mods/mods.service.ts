@@ -139,11 +139,11 @@ export class ModsService {
       lastUpdate: new Date(),
     }
 
-    await this.mods.update(id, toUpdate);
+    const newData = await this.mods.save(toUpdate);
 
     this.logger.log(`Modified mod ${mod.id} by ${mod.author.username}`);
 
-    void this.discord.updateModInfo(mod, 'mods');
+    void this.discord.updateModInfo(newData, 'mods');
 
     return this.findOne(mod.id);
   }
@@ -218,11 +218,11 @@ export class ModsService {
 
     mod.downloads++;
 
-    void this.discord.updateModInfo(mod, 'mods');
+    const newData = await this.mods.save(mod);
+
+    void this.discord.updateModInfo(newData, 'mods');
 
     void this.popular.processDownload(mod.id, 'mod');
-
-    await this.mods.save(mod);
 
     this.logger.log(`Increased downloads for mod ${mod.id} to ${mod.downloads}`);
 

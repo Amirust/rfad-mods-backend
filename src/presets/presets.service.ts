@@ -139,11 +139,11 @@ export class PresetsService {
       lastUpdate: new Date(),
     }
 
-    await this.presets.update(id, toUpdate);
+    const newData = await this.presets.save(toUpdate);
 
     this.logger.log(`Modified preset ${preset.id} by ${preset.author.username}`);
 
-    void this.discord.updateModInfo(preset, 'presets');
+    void this.discord.updateModInfo(newData, 'presets');
 
     return this.findOne(preset.id);
   }
@@ -219,11 +219,11 @@ export class PresetsService {
 
     preset.downloads++;
 
-    void this.discord.updateModInfo(preset, 'presets');
+    const newData = await this.presets.save(preset);
+
+    void this.discord.updateModInfo(newData, 'presets');
 
     void this.popular.processDownload(preset.id, 'preset');
-
-    await this.presets.save(preset);
 
     this.logger.log(`Increased downloads for preset ${preset.id} to ${preset.downloads}`);
 
