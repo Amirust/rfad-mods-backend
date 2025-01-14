@@ -48,7 +48,6 @@ export class Mod extends SnowflakeId {
   declare additionalLinks: AdditionalLink[]
 
   @Column({
-    array: true,
     type: 'jsonb',
     default: []
   })

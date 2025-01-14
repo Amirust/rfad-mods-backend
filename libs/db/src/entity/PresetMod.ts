@@ -50,7 +50,6 @@ export class PresetMod extends SnowflakeId {
   declare additionalLinks: AdditionalLink[]
 
   @Column({
-    array: true,
     type: 'jsonb',
     default: []
   })
