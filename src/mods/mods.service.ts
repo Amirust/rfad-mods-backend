@@ -134,6 +134,7 @@ export class ModsService {
     })
 
     const toUpdate = {
+      ...mod,
       ...data,
       authorId: undefined,
       lastUpdate: new Date(),

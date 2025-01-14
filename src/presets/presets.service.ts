@@ -134,6 +134,7 @@ export class PresetsService {
     })
 
     const toUpdate = {
+      ...preset,
       ...data,
       authorId: undefined,
       lastUpdate: new Date(),
