@@ -11,6 +11,7 @@ import { CacheService } from '../cache/cache.service';
 import { CreateBoostyModDTO } from '@dto/CreateBoostyModDTO';
 import { SnowflakeService } from '@app/snowflake';
 import { ModifyBoostyModDTO } from '@dto/ModifyBoostyModDTO';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class BoostyService {
@@ -22,6 +23,7 @@ export class BoostyService {
     private readonly users: UsersService,
     private readonly cache: CacheService,
     private readonly snowflake: SnowflakeService,
+    private readonly files: FilesService,
   ) {}
 
   async findOne(id: string): Promise<BoostyModDTO> {
@@ -162,6 +164,15 @@ export class BoostyService {
     if (mod.author.id !== userId && !(await this.users.checkModeratorPermission(userId))) throw new ForbiddenException({
       code: ErrorCode.ModNotOwned,
     })
+
+
+    const removedImages = mod.images.filter(image => !data.images.find(newImage => newImage.url === image.url));
+    for (const image of removedImages) {
+      await this.files.deleteFile(userId, /_(\w{32})\.webp$/g.exec(image.url)![1]);
+
+      mod.author.uploadedFiles -= 1;
+      void this.users.updateRawUser(mod.author);
+    }
 
     const toUpdate = {
       ...data,

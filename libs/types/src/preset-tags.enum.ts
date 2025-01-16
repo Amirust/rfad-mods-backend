@@ -15,6 +15,8 @@ export enum PresetTags {
   WoodElf ,
   SnowElf ,
 
+  LastCategory = 319,
+
   // Additional
   Additional = 320,
   HighPoly ,

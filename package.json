@@ -98,7 +98,8 @@
       "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1",
       "^@app/djs(|/.*)$": "<rootDir>/libs/djs/src/$1",
       "^@app/commands(|/.*)$": "<rootDir>/libs/commands/src/$1",
-      "^@app/message-template(|/.*)$": "<rootDir>/libs/message-template/src/$1"
+      "^@app/message-template(|/.*)$": "<rootDir>/libs/message-template/src/$1",
+      "^@app/locale(|/.*)$": "<rootDir>/libs/locale/src/$1"
     }
   }
 }

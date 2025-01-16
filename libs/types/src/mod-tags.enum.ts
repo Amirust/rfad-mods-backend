@@ -1,31 +1,52 @@
 export enum ModTags {
   // Optional Mod Tags
   Graphics = 100,
-  Utils,
-  Clothes,
-  Optimization,
-  Appearance,
+  Clothing,
+  Environment,
+  Characters,
   Interface,
+  Gameplay,
+  Audio,
+  QoL,
+  Locations,
 
-  // Graphics
-  ENB,
-  ReShade,
-  Textures,
+  LastCategory = 119, // Just utility for checking if tag is a category
 
-  // Clothes
-  LightClothes,
-  HeavyClothes,
+  // All Category tags start from 120
+  // Graphic Mods
+  ENB = 120,
+  Reshade,
+  GraphicsPack,
+
+  // Clothing Mods
+  Heavy,
+  Light,
   Pack,
-  Standalone,
 
-  // Appearance
-  Character,
+  // Environment Mods
+  World,
   City,
 
-  // Interface
-  HUD,
-  Information,
+  // Actors Mods
+  Appearance,
+
+  // Interface Mods
+  Extended,
   Fonts,
+  Reskin,
+
+  // Gameplay Mods
+  Animations,
+
+  // Audio Mods
+  Music,
+  Voice,
+
+  // Quality of Life Mods
+  // Just a category
+
+  // Locations Mods
+  // Just a category
 
   // Only for Boosty
   BoostyTier1 = 290,

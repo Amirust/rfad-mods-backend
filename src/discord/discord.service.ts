@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { DjsService } from '@app/djs';
 import { Mod } from '@app/db/entity/Mod';
 import { ConfigService } from '@nestjs/config';
@@ -11,12 +11,13 @@ import {
 } from 'discord.js';
 import { MessageTemplateService } from '@app/message-template';
 import { PresetMod } from '@app/db/entity/PresetMod';
+import { getAllPresetsTagsRu } from '@app/locale/preset-tags.ru';
 
 export type ModTypeString = 'mods' | 'presets';
 export type ModType = Mod | PresetMod;
 
 @Injectable()
-export class DiscordService {
+export class DiscordService implements OnModuleInit {
   private readonly logger = new Logger(DiscordService.name);
   private readonly enabled = Boolean(
     this.config.get<string>('DISCORD_FUNCTIONAL_ENABLED'),
@@ -28,12 +29,19 @@ export class DiscordService {
     private readonly template: MessageTemplateService,
   ) {}
 
-  async createModChannel(mod: ModType, type: ModTypeString): Promise<[string | undefined, string | undefined]> {
+  async onModuleInit() {
+    await this.syncTags();
+  }
+
+  async createModChannel(
+    mod: ModType,
+    type: ModTypeString,
+  ): Promise<[string | undefined, string | undefined]> {
     if (!this.enabled) return [ undefined, undefined ];
 
-    const forum = await this.djs.client.channels.fetch(
+    const forum = (await this.djs.client.channels.fetch(
       this.config.getOrThrow<string>(`DISCORD_${type.toUpperCase()}_FORUM_ID`),
-    ) as ForumChannel | undefined;
+    )) as ForumChannel | undefined;
 
     if (!forum) {
       throw new NotFoundException({
@@ -52,21 +60,23 @@ export class DiscordService {
           installGuide: mod.installGuide,
           lastUpdate: mod.lastUpdate,
           lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
-          author: mod.author.globalName
+          author: mod.author.globalName,
         }),
         components: [ await this.createButtons(mod, type) ],
         files: mod.images.map((image) => ({
           attachment: image.url,
           name: image.url.split('/').at(-1),
         })),
-      }
+      },
     });
 
     const message = (await channel.messages.fetch()).first()!;
 
     void message.pin();
 
-    this.logger.log(`Created channel ${channel.id} for mod (${type}) ${mod.id}`);
+    this.logger.log(
+      `Created channel ${channel.id} for mod (${type}) ${mod.id}`,
+    );
 
     return [ channel.id, message.id ];
   }
@@ -85,19 +95,19 @@ export class DiscordService {
       installGuide: mod.installGuide,
       lastUpdate: mod.lastUpdate,
       lastUpdateSerialized: mod.lastUpdate.toLocaleDateString('ru'),
-      author: mod.author.globalName
+      author: mod.author.globalName,
     });
 
     const row = await this.createButtons(mod, type);
 
     await channel.edit({
       name: mod.name,
-    })
+    });
 
     await message.edit({
       content: message.content,
       components: [ row ],
-    })
+    });
 
     this.logger.log(`Updated info for mod (${type}) ${mod.id}`);
   }
@@ -108,7 +118,9 @@ export class DiscordService {
     const channel = await this.getModChannel(mod.discordChannelId);
     await channel.delete();
 
-    this.logger.log(`Deleted channel ${channel.id} for mod (${type}) ${mod.id}`);
+    this.logger.log(
+      `Deleted channel ${channel.id} for mod (${type}) ${mod.id}`,
+    );
   }
 
   private async getModChannel(id: string): Promise<ThreadChannel> {
@@ -128,14 +140,19 @@ export class DiscordService {
     return channel.messages.fetch(id);
   }
 
-  private async createButtons(mod: ModType, type: 'mods' | 'presets'): Promise<ActionRowBuilder<ButtonBuilder>> {
+  private async createButtons(
+    mod: ModType,
+    type: 'mods' | 'presets',
+  ): Promise<ActionRowBuilder<ButtonBuilder>> {
     const row = new ActionRowBuilder();
     const downloadButton = new ButtonBuilder()
-      .setURL(`${this.config.getOrThrow('APP_BASE_URL')}/${type}/${mod.id}/download`)
+      .setURL(
+        `${this.config.getOrThrow('APP_BASE_URL')}/${type}/${mod.id}/download`,
+      )
       .setLabel('Скачать')
       .setStyle(ButtonStyle.Link);
 
-    const additionalButtons: ButtonBuilder[] = []
+    const additionalButtons: ButtonBuilder[] = [];
     for (const button of mod.additionalLinks) {
       additionalButtons.push(
         new ButtonBuilder()
@@ -147,5 +164,30 @@ export class DiscordService {
 
     row.addComponents(downloadButton, ...additionalButtons);
     return row as ActionRowBuilder<ButtonBuilder>;
+  }
+
+  private async syncTags() {
+    const presetsChannel = (await this.djs.client.channels.fetch(
+      this.config.getOrThrow<string>('DISCORD_PRESETS_FORUM_ID'),
+    )) as ForumChannel | undefined;
+
+    const modsChannel = (await this.djs.client.channels.fetch(
+      this.config.getOrThrow<string>('DISCORD_MODS_FORUM_ID'),
+    )) as ForumChannel | undefined;
+
+    if (!presetsChannel || !modsChannel) {
+      throw new NotFoundException({
+        code: ErrorCode.DiscordChannelNotFound,
+      });
+    }
+
+    await presetsChannel.setAvailableTags(
+      getAllPresetsTagsRu(false).map((e) => ({ name: e })),
+    );
+    await modsChannel.setAvailableTags(
+      getAllPresetsTagsRu(false).map((e) => ({ name: e })),
+    );
+
+    this.logger.log('Synced tags');
   }
 }
