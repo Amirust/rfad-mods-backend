@@ -47,7 +47,7 @@ export const resolveModTagsRu = (
 export const getAllModTagsRu = (withCategories: boolean = false): string[] => {
   if (!withCategories)
     return Object.entries(modTagsRu).filter(([ key ]) =>
-      +key > ModTags.LastCategory
+      +key > ModTags.LastCategory && +key !== ModTags.QoL && +key !== ModTags.Locations
     ).map(([ ,value ]) => value);
 
   return Object.values(modTagsRu);

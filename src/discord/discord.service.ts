@@ -11,8 +11,10 @@ import {
 } from 'discord.js';
 import { MessageTemplateService } from '@app/message-template';
 import { PresetMod } from '@app/db/entity/PresetMod';
-import { getAllPresetsTagsRu } from '@app/locale/preset-tags.ru';
-import { getAllModTagsRu } from '@app/locale/mod-tags.ru';
+import { getAllPresetsTagsRu, resolvePresetTagsRu } from '@app/locale/preset-tags.ru';
+import { getAllModTagsRu, resolveModTagsRu } from '@app/locale/mod-tags.ru';
+import { ModTags } from '@app/types/mod-tags.enum';
+import { PresetTags } from '@app/types/preset-tags.enum';
 
 export type ModTypeString = 'mods' | 'presets';
 export type ModType = Mod | PresetMod;
@@ -75,6 +77,8 @@ export class DiscordService implements OnModuleInit {
 
     void message.pin();
 
+    await channel.setAppliedTags(type === 'mods' ? resolveModTagsRu(mod.tags as ModTags[], false) : resolvePresetTagsRu(mod.tags as PresetTags[], false));
+
     this.logger.log(
       `Created channel ${channel.id} for mod (${type}) ${mod.id}`,
     );
@@ -109,6 +113,8 @@ export class DiscordService implements OnModuleInit {
       content: message.content,
       components: [ row ],
     });
+
+    await channel.setAppliedTags(type === 'mods' ? resolveModTagsRu(mod.tags as ModTags[], false) : resolvePresetTagsRu(mod.tags as PresetTags[], false));
 
     this.logger.log(`Updated info for mod (${type}) ${mod.id}`);
   }
