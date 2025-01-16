@@ -12,6 +12,7 @@ import {
 import { MessageTemplateService } from '@app/message-template';
 import { PresetMod } from '@app/db/entity/PresetMod';
 import { getAllPresetsTagsRu } from '@app/locale/preset-tags.ru';
+import { getAllModTagsRu } from '@app/locale/mod-tags.ru';
 
 export type ModTypeString = 'mods' | 'presets';
 export type ModType = Mod | PresetMod;
@@ -185,7 +186,7 @@ export class DiscordService implements OnModuleInit {
       getAllPresetsTagsRu(false).map((e) => ({ name: e })),
     );
     await modsChannel.setAvailableTags(
-      getAllPresetsTagsRu(false).map((e) => ({ name: e })),
+      getAllModTagsRu(false).map((e) => ({ name: e })),
     );
 
     this.logger.log('Synced tags');

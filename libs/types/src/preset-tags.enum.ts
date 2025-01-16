@@ -1,8 +1,11 @@
 export enum PresetTags {
   // Preset tags starts with 300, 100-299 is reserved for mod tags
 
-  // Race
+  // Categories
   Race = 300,
+  Additional = 301,
+  LastCategory = 302,
+  // Race
   Argonian ,
   Breton ,
   DarkElf ,
@@ -15,10 +18,7 @@ export enum PresetTags {
   WoodElf ,
   SnowElf ,
 
-  LastCategory = 319,
-
   // Additional
-  Additional = 320,
   HighPoly ,
   Male ,
   Female ,
