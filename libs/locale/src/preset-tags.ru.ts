@@ -61,7 +61,7 @@ export const getAllPresetsTagsRu = (withCategories: boolean = false): string[] =
   if (!withCategories)
     return Object.entries(presetTagsRu).filter(([ key ]) =>
       +key > PresetTags.LastCategory
-    ).map(([ value ]) => value);
+    ).map(([ ,value ]) => value);
 
   return Object.values(presetTagsRu);
 }
