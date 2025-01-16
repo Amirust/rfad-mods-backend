@@ -26,6 +26,9 @@ export class DiscordService implements OnModuleInit {
     this.config.get<string>('DISCORD_FUNCTIONAL_ENABLED'),
   );
 
+  private readonly modForumTagsMap = new Map<string, string>();
+  private readonly presetForumTagsMap = new Map<string, string>();
+
   constructor(
     private readonly djs: DjsService,
     private readonly config: ConfigService,
@@ -77,7 +80,10 @@ export class DiscordService implements OnModuleInit {
 
     void message.pin();
 
-    await channel.setAppliedTags(type === 'mods' ? resolveModTagsRu(mod.tags as ModTags[], false) : resolvePresetTagsRu(mod.tags as PresetTags[], false));
+    await channel.setAppliedTags(type === 'mods' ?
+      resolveModTagsRu(mod.tags as ModTags[], false).map((e) => this.modForumTagsMap.get(e)!) :
+      resolvePresetTagsRu(mod.tags as PresetTags[], false).map((e) => this.presetForumTagsMap.get(e)!)
+    );
 
     this.logger.log(
       `Created channel ${channel.id} for mod (${type}) ${mod.id}`,
@@ -114,7 +120,10 @@ export class DiscordService implements OnModuleInit {
       components: [ row ],
     });
 
-    await channel.setAppliedTags(type === 'mods' ? resolveModTagsRu(mod.tags as ModTags[], false) : resolvePresetTagsRu(mod.tags as PresetTags[], false));
+    await channel.setAppliedTags(type === 'mods' ?
+      resolveModTagsRu(mod.tags as ModTags[], false).map((e) => this.modForumTagsMap.get(e)!) :
+      resolvePresetTagsRu(mod.tags as PresetTags[], false).map((e) => this.presetForumTagsMap.get(e)!)
+    );
 
     this.logger.log(`Updated info for mod (${type}) ${mod.id}`);
   }
@@ -188,12 +197,21 @@ export class DiscordService implements OnModuleInit {
       });
     }
 
-    await presetsChannel.setAvailableTags(
+    const presetChannelNew =await presetsChannel.setAvailableTags(
       getAllPresetsTagsRu(false).map((e) => ({ name: e })),
     );
-    await modsChannel.setAvailableTags(
+    const modsChannelNew = await modsChannel.setAvailableTags(
       getAllModTagsRu(false).map((e) => ({ name: e })),
     );
+
+    this.modForumTagsMap.clear();
+    this.presetForumTagsMap.clear();
+
+    for (const tag of modsChannelNew.availableTags)
+      this.modForumTagsMap.set(tag.name, tag.id);
+
+    for (const tag of presetChannelNew.availableTags)
+      this.presetForumTagsMap.set(tag.name, tag.id);
 
     this.logger.log('Synced tags');
   }
