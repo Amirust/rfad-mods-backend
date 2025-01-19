@@ -1,6 +1,7 @@
 import { PresetTags } from '@app/types/preset-tags.enum';
 
 /*
+  Race= 300
   Argonian ,
   Breton ,
   DarkElf ,
@@ -52,7 +53,7 @@ export const resolvePresetTagsRu = (
   resolveCategories: boolean = false,
 ): string[] => {
   if (resolveCategories)
-    return tags.filter((e) => e > PresetTags.LastCategory).map((tag) => presetTagsRu[tag]);
+    return tags.filter((e) => e === PresetTags.Race || e === PresetTags.Additional).map((tag) => presetTagsRu[tag]);
 
   return tags.map((tag) => presetTagsRu[tag]);
 };
@@ -60,8 +61,8 @@ export const resolvePresetTagsRu = (
 export const getAllPresetsTagsRu = (withCategories: boolean = false): string[] => {
   if (!withCategories)
     return Object.entries(presetTagsRu).filter(([ key ]) =>
-      +key > PresetTags.LastCategory
-    ).map(([ ,value ]) => value);
+      +key !== PresetTags.Race && +key !== PresetTags.Additional
+    ).map(([ , value ]) => value);
 
   return Object.values(presetTagsRu);
 }
