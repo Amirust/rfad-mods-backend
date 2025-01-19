@@ -80,6 +80,11 @@ export class DiscordService implements OnModuleInit {
 
     void message.pin();
 
+    console.log('mod.tags', mod.tags);
+    console.log('type', type);
+    console.log('resolveModTagsRu(mod.tags as ModTags[], false)', resolveModTagsRu(mod.tags as ModTags[], false));
+    console.log('resolvePresetTagsRu(mod.tags as PresetTags[], false)', resolvePresetTagsRu(mod.tags as PresetTags[], false));
+
     await channel.setAppliedTags(type === 'mods' ?
       resolveModTagsRu(mod.tags as ModTags[], false).map((e) => this.modForumTagsMap.get(e)!) :
       resolvePresetTagsRu(mod.tags as PresetTags[], false).map((e) => this.presetForumTagsMap.get(e)!)
